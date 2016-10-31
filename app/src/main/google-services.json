@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "1006252614184",
+    "project_id": "zasrepartidoras"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1006252614184:android:ea2ece38d1968956",
+        "android_client_info": {
+          "package_name": "dms.deideas.zas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0yNXEzvX9MHbXikofdq4tMyWR6C31Qt8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

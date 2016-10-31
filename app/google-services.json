@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "175756101709",
+    "firebase_url": "https://zascom-1e028.firebaseio.com",
+    "project_id": "zascom-1e028",
+    "storage_bucket": "zascom-1e028.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175756101709:android:908e2fe0cf19b9fa",
+        "android_client_info": {
+          "package_name": "com.zascom.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "175756101709-o6nb7ceab0fnt52l4imcfuc2ifg61943.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbLeiWk-OfLTzZxvh2IUqYZvo3oa5K7Fs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175756101709:android:f2f45d7452935f1c",
+        "android_client_info": {
+          "package_name": "dms.deideas.zas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "175756101709-o6nb7ceab0fnt52l4imcfuc2ifg61943.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbLeiWk-OfLTzZxvh2IUqYZvo3oa5K7Fs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
