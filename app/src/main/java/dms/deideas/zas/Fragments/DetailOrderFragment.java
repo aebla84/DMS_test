@@ -347,7 +347,7 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
 
     public static DetailOrderFragment newInstance(String title, Order order,String originPage) {
         Globals g = Globals.getInstance();
-        g.setScreenCode(0);
+        g.setScreenCode(Constants.screenCode_detailOrders);
         Bundle b = new Bundle();
         b.putString(Constants.ARGUMENT_TITLE, title);
         b.putString(Constants.ARGUMENT_ORIGINPAGE, originPage);

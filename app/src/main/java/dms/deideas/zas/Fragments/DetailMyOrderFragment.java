@@ -80,7 +80,6 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
     private Integer numMaxOrdersAccepted_BBDD;
     private Boolean isOrderChanged;
     private SharedPreferences prefs;
-
     private int MAP_CONTROL = 0;
 
     private String questionStatus = "";
@@ -432,10 +431,12 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
     public static DetailMyOrderFragment newInstance(String title, Order order, String originPage) {
         Globals g = Globals.getInstance();
 
-        g.setScreenCode(1);
+        g.setScreenCode(Constants.screenCode_detailMyOrders);
         Bundle b = new Bundle();
         b.putString("title", title);
         b.putSerializable("order", order);
+        b.putString("originPage", originPage);
+        originPage = originPage;
         DetailMyOrderFragment fragment = new DetailMyOrderFragment();
         fragment.setArguments(b);
         return fragment;
@@ -528,12 +529,12 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
         } else if (v == disallocate) {
             Globals g = Globals.getInstance();
             if (order.getOrderstatus().equals(Constants.ORDER_STATUS_problem)) {
-                g.setScreenCode(3);
+                g.setScreenCode(Constants.screenCode_detailMyOrders_disallocateProblem);
             } else {
-                g.setScreenCode(2);
+                g.setScreenCode(Constants.screenCode_detailMyOrders_disallocate);
             }
-
-            DialogFragment dialogFragment = DialogFragment.newInstance((Resources.getSystem().getString(R.string.deallocated_order)), order, idUser, originPage);
+            questionStatus = getResources().getString(R.string.deallocated_order);
+            DialogFragment dialogFragment = DialogFragment.newInstance(questionStatus, order, idUser, originPage);
             dialogFragment.show(getFragmentManager(), Constants.DIALOGFRAGMENT);
         } else if (v == btnincidencia) {
             String title = getResources().getString(R.string.incidents);

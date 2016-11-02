@@ -66,16 +66,16 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
 
 
                         // Making Post
-                        if(g.getScreenCode() == 0){
+                        if(g.getScreenCode() == Constants.screenCode_detailOrders){
                             //Toast.makeText(getContext(), " POST 7", Toast.LENGTH_SHORT).show();
                             g.setServiceCode(Constants.SERVICE_CODE_order_edit_acceptbymotodriver);
                         }
-                        else if(g.getScreenCode() == 1){
+                        else if(g.getScreenCode() == Constants.screenCode_detailMyOrders){
                             idUserDriver = idUser;
                             //Toast.makeText(getContext(), " POST 0", Toast.LENGTH_SHORT).show();
                             g.setServiceCode(Constants.SERVICE_CODE_order_edit);
                         }
-                        else if(g.getScreenCode() == 2){
+                        else if(g.getScreenCode() == Constants.screenCode_detailMyOrders_disallocate){
                             g.setServiceCode(Constants.SERVICE_CODE_order_edit_cancelbymotodriver);
                         }
                         else{
@@ -96,7 +96,7 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
                             e.printStackTrace();
                         }
 
-                        if (g.getScreenCode() == 0 || g.getScreenCode() == 2) {
+                        if (g.getScreenCode() == Constants.screenCode_detailOrders || g.getScreenCode() == Constants.screenCode_detailMyOrders_disallocate) {
 
                             // return to Orders Fragment
                             String title = getResources().getString(R.string.orders_sb_title);
@@ -108,11 +108,10 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
                                     .addToBackStack(null)
                                     .commit();
 
-                            //getActivity().setTitle(title);
                             ((MainActivity) getActivity()).setTitle(title);
 
 
-                        } else if (g.getScreenCode() == 1 || g.getScreenCode() == 3) {
+                        } else if (g.getScreenCode() == Constants.screenCode_detailMyOrders || g.getScreenCode() == Constants.screenCode_detailMyOrders_disallocateProblem) {
                             // return to My Orders Fragment
                             String title = getResources().getString(R.string.myorders_sb_title);
                             MyOrdersFragment fragment = MyOrdersFragment.newInstance(title, idUser.toString());
@@ -123,7 +122,6 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
                                     .addToBackStack(null)
                                     .commit();
 
-                            //getActivity().setTitle(title);
                             ((MainActivity) getActivity()).setTitle(title);
 
                         }
@@ -146,9 +144,6 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
                                     .replace(R.id.frame, fragment)
                                     .addToBackStack(null)
                                     .commit();
-
-
-                            //getActivity().setTitle(title);
                             ((MainActivity) getActivity()).setTitle(title);
 
                         } else if (g.getScreenCode() == 1) {
@@ -161,11 +156,7 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
                                     .replace(R.id.frame, fragment)
                                     .addToBackStack(null)
                                     .commit();
-
-
-                            //getActivity().setTitle(title);
                             ((MainActivity) getActivity()).setTitle(title);
-
                         }
                     }
                 })

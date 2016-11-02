@@ -133,8 +133,8 @@ public class Constants {
     public static final String  ARGUMENT_PREVPAGE_TITLE = "prevpage_title";
     public static final String  ARGUMENT_ORIGINPAGE = "originPage";
 
-    public static final int screenCode_0 = 0;
-    public static final int screenCode_1 = 1;
-    public static final int screenCode_2 = 2;
-    public static final int screenCode_3 = 3;
+    public static final int screenCode_detailOrders = 0;
+    public static final int screenCode_detailMyOrders = 1;
+    public static final int screenCode_detailMyOrders_disallocate = 2;
+    public static final int screenCode_detailMyOrders_disallocateProblem = 3;
 }

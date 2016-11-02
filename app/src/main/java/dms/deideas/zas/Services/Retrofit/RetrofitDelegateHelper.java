@@ -609,22 +609,24 @@ public class RetrofitDelegateHelper {
         String motodriver = order.getMotodriver();  //Get id of motodriver from order.
         //endregion
 
-        if (screenCode == 0) {
+        if (screenCode == Constants.screenCode_detailOrders) {
 
             Log.d("idUser: ", String.valueOf(idUser));
             Log.d("idOrder: ", String.valueOf(idOrder));
-            order.setOrderstatus(Constants.ORDER_STATUS_driver_has_accepted);
-            // Setting the motodriver
-            order.setMotodriver(String.valueOf(idUser));
-            orderUpdate.setOrder(order);
+            order.setOrderstatus(Constants.ORDER_STATUS_driver_has_accepted); // Setting the ORDER_STATUS = driver_has_accepted
+            order.setMotodriver(String.valueOf(idUser)); // Setting the motodriver
+            orderUpdate.setOrder(order); //Update order
 
+            //Update status and motodriver from order . Motodriver accepts the order in "PEDIDOS" page.
             orderService.acceptOrderByMotodriver(idOrder, orderUpdate, oauth_consumer_key, oauth_nonce, oauth_signature,
                     oauth_signature_method, oauth_timestamp).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    //If is correct the update of order
                     if (response.isSuccessful()) {
                         Log.d("URL accept: ", response.raw().request().url().toString());
                         Log.d("CODE_POST: ", String.valueOf(response.code()));
+                        //Update numMyOrdersWithouTProblems  in preferences on App.
                         SharedPreferences.Editor editor = prefs.edit();
                         inumMyOrdersWithoutProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
                         inumMyOrdersWithoutProblems = inumMyOrdersWithoutProblems + 1;
@@ -640,11 +642,14 @@ public class RetrofitDelegateHelper {
                     Log.d("Error", "No respuesta");
                 }
             });
-        } else if (screenCode == 1 || screenCode == 3) {
+        } else if (screenCode == Constants.screenCode_detailMyOrders || screenCode == Constants.screenCode_detailMyOrders_disallocateProblem) {
+
             final String newStatus = orderState(status,screenCode);
             order.setOrderstatus(newStatus);
             order.setMotodriver(String.valueOf(idUserDriver));
             orderUpdate.setOrder(order);
+
+            //Update status and motodriver from order . Motodriver change status of the order in "MIS PEDIDOS" page.
             orderService.updateOrderStatus(idOrder, orderUpdate, oauth_consumer_key, oauth_nonce, oauth_signature,
                     oauth_signature_method, oauth_timestamp).enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -654,6 +659,7 @@ public class RetrofitDelegateHelper {
                     SharedPreferences.Editor editor = prefs.edit();
                     if(newStatus.equals(Constants.ORDER_STATUS_order_delivered))
                     {
+                        //Update numMyOrdersWithouProblems  in preferences on App.
                         inumMyOrdersWithoutProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
                         inumMyOrdersWithoutProblems = inumMyOrdersWithoutProblems - 1;
                         editor.putInt("numMyOrdersWithouProblems",inumMyOrdersWithoutProblems);
@@ -667,12 +673,12 @@ public class RetrofitDelegateHelper {
                 }
             });
         }
-        else if(screenCode == 2){
+        else if(screenCode == Constants.screenCode_detailMyOrders_disallocate){
             Log.d("idOrder: ", String.valueOf(idOrder));
             order.setOrderstatus(Constants.ORDER_STATUS_rest_has_accepted);
-            // Setting the motodriver
-            order.setMotodriver("0");
+            order.setMotodriver("0");// Clean - Setting the motodriver
             orderUpdate.setOrder(order);
+            // Update status and motodriver from order . This case of use happens in "MIS PEDIDOS" 's  page   when motodriver want to reject an order accepted by him previously.
             orderService.cancelOrderByMotodriver(idOrder, orderUpdate, oauth_consumer_key, oauth_nonce, oauth_signature,
                     oauth_signature_method, oauth_timestamp).enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -680,6 +686,7 @@ public class RetrofitDelegateHelper {
                     if (response.isSuccessful()) {
                         Log.d("URL 3_POST: ", response.raw().request().url().toString());
                         Log.d("CODE_POST: ", String.valueOf(response.code()));
+                        //Update numMyOrdersWithouProblems  in preferences on App.
                         SharedPreferences.Editor editor = prefs.edit();
                         inumMyOrdersWithoutProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
                         inumMyOrdersWithoutProblems = inumMyOrdersWithoutProblems - 1;
@@ -698,17 +705,22 @@ public class RetrofitDelegateHelper {
         }
     }
 
+    //Create "incidencia" in order.
     public void addIncidencia(Boolean isNew,final response bResult) {
+
+        //region Iniatiate order + Set problems + set status problem +  set orderUpdate
         Order order = new Order();
         order.setProblem_details(this.problem_details);
         order.setOrderstatus(Constants.ORDER_STATUS_problem);
         OrderUpdate orderUpdate = new OrderUpdate();
         orderUpdate.setOrder(order);
+        //endregion
 
         if (isNew) {
             //Send Typeofproblem and description of problem
             //'lista_incidencias_problemtype'
             //'lista_incidencias_description'
+            //Create incidencia  -- problem_details with problem_type and problems . Change status of order
             orderService.addincidencia_completed(idOrder, orderUpdate, oauth_consumer_key, oauth_nonce, oauth_signature,
                     oauth_signature_method, oauth_timestamp).enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -720,10 +732,8 @@ public class RetrofitDelegateHelper {
                     } else {
                         Log.d("error: ", String.valueOf(response.errorBody()));
                         bResult.hascreatecomment(false);
-
                     }
                 }
-
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.d("Error", "No respuesta");
@@ -735,6 +745,7 @@ public class RetrofitDelegateHelper {
             //Send position to  add new description and description of problem
             //'lista_incidencias_posicion'
             //'lista_incidencias_description'
+            //NOT USED  -- Create description of incidencia
             orderService.addincidencia_description(idOrder, orderUpdate, oauth_consumer_key, oauth_nonce, oauth_signature,
                     oauth_signature_method, oauth_timestamp).enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -746,7 +757,6 @@ public class RetrofitDelegateHelper {
                         Log.d("error: ", String.valueOf(response.errorBody()));
                     }
                 }
-
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.d("Error", "No respuesta");
@@ -756,12 +766,12 @@ public class RetrofitDelegateHelper {
 
     }
 
+    //Obtain the total number of orders . Filtered by orderstatus = "rest_has_accepted"  and orderstatus = "problem" , motodriver = 0 user of aplication and shipping_lines_method_id = "distance_rate"
     public void getOrdersCount(final numOrders numOrders) {
         orderService.count(oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderCount>() {
                  @Override
                  public void onResponse(Call<OrderCount> call, Response<OrderCount> response) {
-
                      Log.d("URL getOrdersCount: ", response.raw().request().url().toString());
                      Log.d("CODE getOrdersCount: ", String.valueOf(response.code()));
                      numOrders.setText(response.body(), "1");
@@ -774,6 +784,8 @@ public class RetrofitDelegateHelper {
         );
     }
 
+    //Get the total number of orders by IdUser.
+    // Filtered by orderstatus different (rest_has_accepted, order_delivered, order_delivered_w_problem ), motodriver = idUser user of aplication and shipping_lines_method_id = "distance_rate"
     public void getOrdersCountByIdUser(final numOrders numOrders) {
         orderService.countByIdUser(idUser, oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderCount>() {
@@ -791,6 +803,9 @@ public class RetrofitDelegateHelper {
             }
         });
     }
+
+    //Obtain the total number of orders .
+    // Filtered by orderstatus = "rest_has_accepted"  and orderstatus = "problem" , motodriver = 0 user of aplication and shipping_lines_method_id = "distance_rate" and by Area Delivery
     public void getOrdersCountByAreaDelivery(final numOrders numOrders) {
         orderService.countByAreaDelivery(strArea, oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderCount>() {
@@ -812,6 +827,9 @@ public class RetrofitDelegateHelper {
             }
         });
     }
+
+    //Get the total number of orders by IdUser.
+    // Filtered by orderstatus different (rest_has_accepted, order_delivered, order_delivered_w_problem ), motodriver = idUser user of aplication and shipping_lines_method_id = "distance_rate"and by Area Delivery
     public void getOrdersCountByUserAreaDelivery(final numOrders numOrders) {
         orderService.countByUserByAreaDelivery(idUser,strArea, oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderCount>() {
@@ -834,6 +852,7 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Create a new order note for the given order
     public void addOrderNote(final response bResult) {
         OrderNote order = new OrderNote();
         order.setNote(this.order_note.getNote());
@@ -862,6 +881,8 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Get all orders filtered by orderstatus different (rest_has_accepted,problem, order_delivered, order_delivered_w_problem )
+    // and not motodriver  and shipping_lines_method_id = "distance_rate" and by Area Delivery
     public void getOrdersByAreaDelivery(final AlRecibirListaDelegate delegate) {
         orderService.listorders_byarea(strArea, oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderSearch>() {
@@ -870,7 +891,6 @@ public class RetrofitDelegateHelper {
                 if (response.isSuccessful()) {
                     Log.d("URL getOrdersByArea", response.raw().request().url().toString());
                     Log.d("CODE Orders-Area : ", String.valueOf(response.code()));
-
                     // Al recibir datos llamamos al método
                     delegate.listaRecibida(response.body());
                     delegate.closedialog();
@@ -894,6 +914,8 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Get all orders filtered by orderstatus different (rest_has_accepted,problem, order_delivered, order_delivered_w_problem )
+    // and by motodriver = id user of aplication and shipping_lines_method_id = "distance_rate" and by Area Delivery
     public void getOrdersByUserAndArea(final AlRecibirListaDelegate delegate) {
         orderService.listorders_byuser_byarea(idUser, strArea, oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderSearch>() {
@@ -924,6 +946,7 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Get all area delivery from BBDD. You create area delivery in :  http://zascomidaentuboca.es/wp-admin/edit.php?post_type=reparto
     public void getareaDelivery(final AlRecibirListaDelegate delegate) {
         areaDeliveryService.get_areadelivery().enqueue(new Callback<ArrayList<Reparto>>() {
             @Override
@@ -953,6 +976,8 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Get number that especify the maximum number of orders that can be accepted by the user trhough app.
+    //It can modify in website. You have tab "Opt" is options. An then tab "App Settings"
     public void get_maxnumber_orders_accepted(final AlRecibirListaDelegate delegate) {
         orderService.get_maxnumber_orders_accepted().enqueue(new Callback<String>() {
             @Override
@@ -979,6 +1004,9 @@ public class RetrofitDelegateHelper {
         });
 
     }
+
+    //Get number that especify the maximum number of orders (cards of orders) that can be visibles in ths screen "Pedidos".
+    //It can modify in website. You have tab "Opt" is options. An then tab "App Settings"
     public void get_maxnumber_orders_visible(final AlRecibirListaDelegate delegate) {
         orderService.get_maxnumber_orders_visible_inlist().enqueue(new Callback<String>() {
             @Override
@@ -1006,7 +1034,8 @@ public class RetrofitDelegateHelper {
 
     }
 
-
+    //Get number  that especify the maximum minutes that order (in "MIS PEDIDOS" screen) will not be black color (This means that is prioritary).
+    //It can modify in website. You have tab "Opt" is options. An then tab "App Settings"
     public void get_maxtime(final AlRecibirListaDelegate delegate) {
         orderService.get_maxtime_inlist().enqueue(new Callback<String>() {
             @Override
@@ -1038,6 +1067,7 @@ public class RetrofitDelegateHelper {
 
     }
 
+    //Get specific order by identifier.
     public void get_orderById(final AlRecibirListaDelegate delegate) {
         orderService.getorderById(idOrder, oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderUpdate>() {
@@ -1068,6 +1098,7 @@ public class RetrofitDelegateHelper {
     }
     //endregion
 
+    //Method that provide us the next status of order depending by status actual
     private String orderState(String orderstatus,int screenCode) {
 
         String newStatus = "";
@@ -1083,7 +1114,7 @@ public class RetrofitDelegateHelper {
                 newStatus = Constants.ORDER_STATUS_order_delivered;
                 break;
             case Constants.ORDER_STATUS_problem:
-                if(screenCode ==1)
+                if(screenCode == 1)
                     newStatus = Constants.ORDER_STATUS_order_delivered_w_problem;
                 else
                     newStatus = Constants.ORDER_STATUS_problem;
@@ -1096,7 +1127,7 @@ public class RetrofitDelegateHelper {
         return newStatus;
     }
 
-
+    //region  INTERFACES and their response methods.
     public interface AlRecibirListaDelegate {
 
         void listaRecibida(OrderSearch body);
@@ -1141,4 +1172,5 @@ public class RetrofitDelegateHelper {
     public interface response{
         void hascreatecomment(Boolean bResult);
     }
+    //endregion
 }
