@@ -1,0 +1,60 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="header_left_padding">16dp</dimen>
+    <dimen name="header_height">192dp</dimen>
+
+    <dimen name="perfil_image_size">64dp</dimen>
+
+    <!-- Padding activity card -->
+    <dimen name="card_paddingBottom">16dp</dimen>
+    <dimen name="card_paddingTop">16dp</dimen>
+    <dimen name="card_line_spacing">5dp</dimen>
+    <dimen name="card_paddingLeft">16dp</dimen>
+    <dimen name="card_paddingRight">16dp</dimen>
+    <dimen name="card_paddingLeft_5">5dp</dimen>
+    <dimen name="card_paddingRight_5">5dp</dimen>
+
+    <!-- Padding detail fragment -->
+    <dimen name="detail_paddingBottom">10dp</dimen>
+    <dimen name="detail_paddingTop">10dp</dimen>
+    <dimen name="detail_line_spacing">25dp</dimen>
+    <dimen name="detail_paddingLeft">16dp</dimen>
+    <dimen name="detail_paddingRight">16dp</dimen>
+
+    <!-- Padding header menu -->
+    <dimen name="header_marginTop">60dp</dimen>
+
+    <!-- Padding detail myorder fragment menu image -->
+    <dimen name="order_menu_paddingBottom">5dp</dimen>
+    <dimen name="order_menu_paddingTop">5dp</dimen>
+    <dimen name="order_menu_line_spacing">25dp</dimen>
+    <dimen name="order_menu_paddingLeft">5dp</dimen>
+    <dimen name="order_menu_paddingRight">10dp</dimen>
+
+    <!-- Padding detail historical fragment -->
+    <dimen name="card_historical_right">10dp</dimen>
+
+    <!-- Padding profile info -->
+    <dimen name="profile_paddingStart">15dp</dimen>
+    <dimen name="profile_imgview_height">150dp</dimen>
+    <dimen name="profile_imgview_width">150dp</dimen>
+
+    <!--  Login  -->
+    <dimen name="login_marginTop">30dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!-- Padding note card -->
+    <dimen name="note_paddingBottom">10dp</dimen>
+    <dimen name="note_paddingTop">10dp</dimen>
+    <dimen name="note_line_spacing">5dp</dimen>
+    <dimen name="note_paddingLeft">16dp</dimen>
+    <dimen name="note_paddingRight">16dp</dimen>
+    <dimen name="note_paddingLeft_5">5dp</dimen>
+    <dimen name="note_paddingRight_5">5dp</dimen>
+
+    <!-- Padding comments fragment -->
+    <dimen name="comment_recyview_paddingBottom">60dp</dimen>
+</resources>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ZAS</string>
+
+    <!-- Strings Login Screen -->
+    <string name="user">Usuario</string>
+    <string name="password">Password</string>
+    <string name="enter">ACCEDER</string>
+    <string name="success">Login correcto!</string>
+    <string name="fail">Error en credenciales, vuelve a probar!</string>
+    <string name="fail_area">Error en el área seleccionada.</string>
+    <string name="prompt_area">Zona de reparto</string>
+
+    <!-- Strings Name Function -->
+    <string name="get_max_accepted">get_maxnumber_orders_accepted</string>
+    <string name="get_max_visible">get_maxnumber_orders_visible</string>
+
+    <!-- MainActivity -->
+    <string name="go_fragment_home">home</string>
+    <string name="go_fragment_historical">historical</string>
+    <string name="go_fragment_orders">orders</string>
+    <string name="go_fragment_myorders">myorders</string>
+
+
+    <!-- Strings Navigation Drawer -->
+    <string name="home_item">Inicio</string>
+    <string name="order_id_item">Pedido número</string>
+    <string name="profile_item">Perfil</string>
+    <string name="title_section_config">Configuración</string>
+    <string name="historical_item">Histórico</string>
+    <string name="orders_item">Pedidos</string>
+    <string name="my_orders_item">Mis Pedidos</string>
+    <string name="order_comments">Comentarios</string>
+
+    <string name="logout_item">Logout</string>
+
+    <!-- Strings Status Bar Title -->
+    <string name="home_sb_title">Inicio</string>
+    <string name="orders_sb_title">Pedidos</string>
+    <string name="myorders_sb_title">Mis Pedidos</string>
+
+    <!-- Strings Orders List -->
+    <string name="order_count">Número de pedidos: </string>
+
+    <!-- Strings Orders CardView -->
+    <string name="order_text">PEDIDO #</string>
+    <string name="restaurant_name">Restaurante</string>
+    <string name="direction_restaurant">Dirección</string>
+    <string name="hour_of_order">Hora del pedido</string>
+    <string name="hour_of_order_restaurant_accepted">Hora aceptado por restaurante</string>
+    <string name="time_left_of_order">Tiempo recogida</string>
+    <string name="state_of_order">Estado Pedido</string>
+    <string name="see_order">VER PEDIDO</string>
+    <string name="number">2222</string>
+    <string name="status">Default</string>
+
+    <!-- Strings Historical CardView -->
+    <string name="day">DIA </string>
+    <string name="money">DINERO </string>
+    <string name="state">ESTADO# </string>
+    <string name="paid"> PAGADO </string>
+
+    <!-- Strings Detail CardView -->
+    <string name="order">Pedido #</string>
+    <string name="income">De camino</string>
+    <string name="in_restaurant">En restaurante</string>
+    <string name="collected">Recogido</string>
+    <string name="finished">Finalizado</string>
+    <string name="customer_name">Nombre</string>
+    <string name="direction_customer">Dirección</string>
+    <string name="type_of_payment">Forma de pago</string>
+    <string name="state_of_payment">Estado del pago</string>
+    <string name="customer_observation">Comentarios </string>
+    <string name="customer_incident">Incidencias</string>
+    <string name="comment_motodriver">COMENTARIOS REPARTIDOR:</string>
+    <string name="btn_accept">Aceptar</string>
+    <string name="btn_cancel">Cancelar</string>
+    <string name="btn_income">En restaurante</string>
+    <string name="btn_disallocate">Desasignar</string>
+    <string name="btn_problem">Incidencia</string>
+    <string name="comments">Comentarios</string>
+    <string name="incidents">Incidencias</string>
+    <string name="finished_incidence">Inc. Finalizada</string>
+    <string name="btn_savelocation">Guardar localización</string>
+    <string name="btn_savephone">Guardar teléfono </string>
+    <string name="phone">Teléfono</string>
+
+
+    <!-- Strings Dialog -->
+    <string name="accept_order">¿Quieres aceptar el pedido?</string>
+    <string name="accept">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="in_rest">¿Estás en el restaurante?</string>
+    <string name="order_collected">¿Has recogido el pedido?</string>
+    <string name="order_finished">¿Deseas finalizar el pedido?</string>
+    <string name="toast_order_accepted">Pedido Aceptado</string>
+    <string name="toast_in_rest">En el restaurante</string>
+    <string name="toast_collected">Pedido Recogido</string>
+    <string name="toast_finished">Pedido Finalizado</string>
+
+    <!-- Strings Profile Fragment -->
+    <string name="lblprofile">Datos Personales</string>
+    <string name="lblstatus">Estado</string>
+    <string name="lbltypestatus">Activo</string>
+    <string name="lblname">Nombre y apellidos</string>
+    <string name="etname">Nombre y apellido</string>
+    <string name="lblemail">Email</string>
+    <string name="etemail">Email</string>
+    <string name="save">Guardar</string>
+    <string name="edit">Editar</string>
+
+    <!-- Strings Historical Fragment -->
+    <string name="orderHistorical">Pedido</string>
+    <string name="orderDay">dd/mm/aaaa</string>
+
+    <!-- Strings Order Status -->
+    <string name="problem_status">INCIDENCIA</string>
+    <string name="motodriver_accept_status">EN CAMINO</string>
+    <string name="rest_has_accepted_status">ACEPTADO</string>
+    <string name="driver_in_rest_status">RESTAURANTE</string>
+    <string name="driver_on_road_status">RECOGIDO</string>
+    <string name="order_delivered_status">FINALIZADO</string>
+
+    <string name="problems_prompt">Elige el tipo de incidencia</string>
+    <string-array name="problems_array">
+        <item>Elige el tipo de incidencia</item>
+        <item>Derramamiento de comida</item>
+        <item>Equivocación de plato</item>
+        <item>Equivocación de pedido</item>
+        <item>Olvido de plato</item>
+        <item>Derramar bebida</item>
+        <item>Equivocacion bebida</item>
+        <item>Olvido bebida</item>
+        <item>Otro</item>
+    </string-array>
+
+    <!-- Strings Comments/Notes -->
+    <string name="nocomments">No hay ningún comentario.</string>
+    <string name="hint_edittext_comment">Escribe un comentario.</string>
+    <string name="hint_edittext_problem">Escribe la incidencia.</string>
+    <string name="alert_edittext_comment">Debe introducir un comentario.</string>
+    <string name="alert_edittext_problem">Debe introducir una incidencia.</string>
+    <string name="alert_spinner_problem">Debe seleccionar un tipo de incidencia.</string>
+
+    <!-- Strings Problems - typeOfProblem -->
+    <string name="problem_drop_food">Derramamiento de comida.</string>
+    <string name="problem_wrong_plate">Equivocación de plato.</string>
+    <string name="problem_wrong_order">Equivocación de pedido.</string>
+    <string name="problem_forget_plate">Olvido de plato.</string>
+    <string name="problem_drop_drink">Derramar bebida.</string>
+    <string name="problem_wrong_drink">Equivocacion de bebida.</string>
+    <string name="problem_forget_drink">Olvido bebida.</string>
+
+    <string name="payment_paid">PAGADO.</string>
+    <string name="payment_not_paid">NO PAGADO.</string>
+
+    <!-- Strings Toast messages -  Detail Order -->
+    <string name="toast_phone">Nuevo teléfono de cliente guardado correctamente.</string>
+    <string name="comment_phone"> El nuevo teléfono del cliente es :</string>
+    <string name="toast_location">La dirección del cliente se ha guardado correctamente.</string>
+    <string name="comment_location">Dirección nueva del cliente :</string>
+    <string name="toast_gps_active">GPS activado</string>
+    <string name="toast_without_address">SIN Dirección</string>
+    <string name="toast_without_address_correctly">"No disponemos de la ubicación correcta."</string>
+
+
+    <string name="phone_error">Introduce un teléfono.</string>
+    <string name="lblAreaDelivery">Zona de reparto</string>
+
+    <!-- Strings Adapters -->
+    <string name="paid_home">Pagar en domicilio</string>
+    <string name="paid_online">Pago ONLINE</string>
+    <string name="euro_Symbol">€</string>
+    <string name="cash_payment">Pago en EFECTIVO</string>
+    <string name="online_payment">Pago ONLINE</string>
+    <string name="minutes_min"> min</string>
+
+    <string name="deallocated_order">¿Desea desasignarse del pedido?</string>
+    <string name="error">ERROR</string>
+
+</resources>

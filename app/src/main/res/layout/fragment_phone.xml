@@ -1,0 +1,72 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearlayout_editcomment"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/login_marginTop">
+
+        <TextView
+            android:id="@+id/txtphone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Introduce el teléfono del cliente."
+            style="@style/titleAvenirFont"
+            android:paddingTop="@dimen/login_marginTop"
+            android:paddingLeft="@dimen/card_paddingLeft"
+            android:paddingRight="@dimen/card_paddingRight" />
+
+        <EditText
+            android:id="@+id/newPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/card_paddingLeft"
+            android:paddingTop="@dimen/login_marginTop"
+            android:paddingBottom="@dimen/card_paddingBottom"
+            style="@style/secondTitleAvenirFont_pink"
+            android:layout_below="@+id/txtphone"
+            android:hint="@string/phone"
+            android:paddingRight="@dimen/card_paddingRight"
+            android:inputType = "number" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/newPhone"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/accept"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:clickable="true"
+                android:src="@drawable/ic_done_white_24dp"
+                android:layout_below="@+id/newPhone"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginRight="5sp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:clickable="true"
+                android:src="@drawable/ic_clear_white_24dp"
+                android:layout_below="@+id/newPhone"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginLeft="5sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</FrameLayout>

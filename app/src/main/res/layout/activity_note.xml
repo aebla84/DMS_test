@@ -1,0 +1,67 @@
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/comment_card"
+    android:layout_width="match_parent"
+    android:clickable="true"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardElevation="4dp"
+    card_view:cardUseCompatPadding="true"
+    android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/cardlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/colorAccent">
+
+            <RelativeLayout
+                android:id="@+id/block1"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/note_paddingBottom"
+                android:paddingTop="@dimen/note_paddingTop"
+                android:paddingLeft="@dimen/note_paddingLeft"
+                android:paddingRight="@dimen/note_paddingRight"
+                android:layout_width="wrap_content"
+                android:layout_weight="0.1"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/note_createdAt"
+                    style="@style/titleAvenirFontWhite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="txttypenote" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/block2"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/note_paddingBottom"
+                android:paddingTop="@dimen/note_paddingTop"
+                android:paddingLeft="@dimen/note_paddingLeft"
+                android:paddingRight="@dimen/note_paddingRight"
+                android:background="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/block1"
+                android:layout_toRightOf="@+id/block1"
+                android:layout_toEndOf="@+id/block1"
+                android:layout_weight="0.8">
+
+            <TextView
+                    android:id="@+id/note_text"
+                    style="@style/secondTitleAvenirFont_pink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+</android.support.v7.widget.CardView>

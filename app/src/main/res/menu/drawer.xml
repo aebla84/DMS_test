@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single" >
+        <item
+            android:id="@+id/nav_home"
+            android:checked="true"
+            android:icon="@drawable/ic_home_black_36dp"
+            android:title="@string/home_item" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="@string/profile_item" />
+        <item
+            android:id="@+id/nav_historical"
+            android:icon="@drawable/ic_assignment_black_36dp"
+            android:title="@string/historical_item" />
+    </group>
+    <group android:checkableBehavior="single" >
+        <item
+            android:id="@+id/nav_orders"
+            android:icon="@drawable/ic_pedidos_perfil_36dp"
+            android:title="@string/orders_sb_title" />
+        <item
+            android:id="@+id/nav_myorders"
+            android:icon="@drawable/ic_mispedidos_perfil_36dp"
+            android:title="@string/myorders_sb_title" />
+    </group>
+    <!-- Other Section -->
+    <item
+        android:id="@+id/section_config"
+        android:title="@string/title_section_config">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_exit_to_app_black_36dp"
+                android:title="@string/logout_item" />
+        </menu>
+    </item>
+
+</menu>

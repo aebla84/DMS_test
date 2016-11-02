@@ -1,0 +1,75 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:hint="@string/nocomments"
+        android:id="@+id/tv_nocomments"
+        style="@style/titleAvenirFont"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/detail_paddingLeft"
+        android:paddingRight="@dimen/detail_paddingRight" /-->
+
+<android.support.v7.widget.RecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recycle2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/comment_recyview_paddingBottom"
+    android:clipToPadding="false"
+    android:scrollbars="vertical" />
+
+<android.support.design.widget.FloatingActionButton
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|right"
+    android:layout_margin="16dp"
+    android:clickable="true"
+    android:background="@color/colorAccent"
+    android:src="@drawable/ic_add_white_24dp"
+    android:id="@+id/fab_addcomment"/>
+
+
+
+</android.support.design.widget.CoordinatorLayout>
+
+    <LinearLayout
+        android:id="@+id/send_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="bottom|center"
+        android:visibility="invisible"
+        android:background="@color/white">
+        
+    <EditText
+        android:id="@+id/write_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_weight="5"
+        android:hint="@string/hint_edittext_comment"
+        android:inputType="textMultiLine"
+        android:scrollHorizontally="false" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:background="@color/colorAccent"
+            android:src="@drawable/ic_done_white_24dp"
+            android:id="@+id/send_comment"/>
+    </LinearLayout>
+</RelativeLayout>

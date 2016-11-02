@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="titleFont">
+        <item name="android:fontFamily">times new roman</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">48sp</item>
+    </style>
+    <style name="secondTitleFont">
+        <item name="android:fontFamily">times new roman</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="thirdTitleFont">
+        <item name="android:fontFamily">times new roman</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+</resources>

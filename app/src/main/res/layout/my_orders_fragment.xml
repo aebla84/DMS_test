@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        >
+
+        <TextView
+            android:id="@+id/order_count"
+            style="@style/titleAvenirFontWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/detail_paddingLeft"
+            android:layout_marginTop="@dimen/detail_paddingTop"
+            android:text="@string/order_count" />
+
+        <TextView
+            android:id="@+id/numOrders"
+            style="@style/titleAvenirFontWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/detail_paddingLeft"
+            android:layout_marginTop="@dimen/detail_paddingTop"
+            android:layout_toLeftOf="@+id/order_count"
+            android:layout_toStartOf="@+id/order_count" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/recycle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="3dp"
+        android:scrollbars="vertical" />
+</LinearLayout>

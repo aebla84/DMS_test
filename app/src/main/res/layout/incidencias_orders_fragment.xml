@@ -1,0 +1,115 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:hint="@string/nocomments"
+        android:id="@+id/tv_nocomments"
+        style="@style/titleAvenirFont"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="@dimen/detail_paddingLeft"
+        android:layout_marginRight="@dimen/detail_paddingRight" /-->
+
+<android.support.v7.widget.RecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recycle2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="3dp"
+    android:scrollbars="vertical" />
+
+<android.support.design.widget.FloatingActionButton
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|right"
+    android:layout_margin="16dp"
+    android:clickable="true"
+    android:background="@color/colorAccent"
+    android:src="@drawable/ic_add_white_24dp"
+    android:id="@+id/fab_addcomment"/>
+
+
+
+</android.support.design.widget.CoordinatorLayout>
+    <LinearLayout
+        android:id="@+id/send_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        android:background="@color/white"
+        android:layout_weight="0.7">
+    <LinearLayout
+        android:id="@+id/send_message1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:background="@color/white"
+        android:layout_weight="5">
+
+        <Spinner
+                android:id="@+id/problems_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:prompt="@string/problems_prompt"
+                android:entries="@array/problems_array"
+                android:layout_above="@+id/send_message"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+            android:layout_weight="5" />
+
+        <EditText
+        android:id="@+id/write_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:scrollHorizontally="false"
+            android:layout_weight="5" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/newPhone"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/send_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:clickable="true"
+                android:src="@drawable/ic_done_white_24dp"
+                android:layout_below="@+id/newPhone"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginRight="5sp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/cancel_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:clickable="true"
+                android:src="@drawable/ic_clear_white_24dp"
+                android:layout_below="@+id/newPhone"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginLeft="5sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

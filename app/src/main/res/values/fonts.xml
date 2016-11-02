@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="titleFont">
+        <item name="android:fontFamily">times new roman</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="secondTitleFont">
+        <item name="android:fontFamily">times new roman</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="thirdTitleFont">
+        <item name="android:fontFamily">times new roman</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="mapFont">
+    <item name="android:fontFamily">Avenir</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">18sp</item>
+    <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="secondmapFont">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="titleAvenirFont">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="titleAvenirFontWhite">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="titleAvenirFont_Pink">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+    <style name="secondTitleAvenirFont">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="secondTitleAvenirFont_pink">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+    <style name="thirdTitleAvenirFont">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+    <style name="thirdTitleAvenirFont_White">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="thirdTitleAvenirFont_pink">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+    <style name="secondTitleAvenirFont_Shape">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#CA3265</item>
+    </style>
+    <style name="thirdTitleAvenirFont_Shape">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#CA3265</item>
+    </style>
+    <style name="title_card">
+        <item name="android:fontFamily">Avenir</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+</resources>
