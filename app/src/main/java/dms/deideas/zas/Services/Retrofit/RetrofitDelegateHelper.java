@@ -1,17 +1,13 @@
 package dms.deideas.zas.Services.Retrofit;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -20,14 +16,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 import dms.deideas.zas.Constants;
 import dms.deideas.zas.Globals;
-import dms.deideas.zas.Model.Devices;
 import dms.deideas.zas.Model.Incidencia;
 import dms.deideas.zas.Model.Order;
 import dms.deideas.zas.Model.OrderNote;
 import dms.deideas.zas.Model.Reparto;
-import dms.deideas.zas.R;
 import dms.deideas.zas.Services.AreaDeliveryService;
-import dms.deideas.zas.Services.DevicesService;
 import dms.deideas.zas.Services.OrderCount;
 import dms.deideas.zas.Services.OrderNoteGet;
 import dms.deideas.zas.Services.OrderNoteService;
@@ -49,6 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class RetrofitDelegateHelper {
 
+    //region Initiate variable
     public static final String BASE_URL = Constants.URL_ZAS;
     public static String BASE_URL_CODIFIED = "";
     private final Retrofit retrofit;
@@ -58,7 +52,7 @@ public class RetrofitDelegateHelper {
     private final int intResult = 0;
     private String oauth_consumer_key = Constants.OAUTH_CONSUMER_KEY;
     private String oauth_consumer_secret = Constants.OAUTH_CONSUMER_SECRET;
-    private String oauth_signature_method = "HMAC-SHA1";
+    private String oauth_signature_method = Constants.OAUTH_SIGNATURE_METHOD;
     private String oauth_timestamp = null;
     private String oauth_nonce = null;
     private String oauth_signature = null;
@@ -67,34 +61,36 @@ public class RetrofitDelegateHelper {
     private int idOrder = 0;
     private Incidencia problem_details;
     private OrderNote order_note;
-    private List<String> lstIncidencias;
     private Boolean bResult = false;
-
-    private Integer inumMyOrdersWithouProblems = 0;
+    private Integer inumMyOrdersWithoutProblems = 0;
     private SharedPreferences prefs;
+    //endregion
 
-
+    //region Initiate Retrofit (Add Timeout + Constructor Retrofit +  create instance Retrofit)
     public RetrofitDelegateHelper() throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
         // Initiate params
         oauth_nonce = getNonce();
         oauth_timestamp = getTimestamp();
         oauth_signature = getSignature(oauth_consumer_secret);
 
+        //Add Timeout in reply Retrofit's
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .build();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .build();
 
+        //Build Retrofit
+        retrofit = new Retrofit.Builder() //constructor
+                .baseUrl(BASE_URL)  //Set the API base URL.
+                .addConverterFactory(GsonConverterFactory.create()) //Add converter factory for serialization and deserialization of objects.
+                .client(okHttpClient) //The HTTP client used for requests.
+                .build(); //Create the Retrofit instance using the configured values.
+
+        //Create instance Retrofit
         orderService = retrofit.create(OrderService.class);
         ordernoteService = retrofit.create(OrderNoteService.class);
         areaDeliveryService = retrofit.create(AreaDeliveryService.class);
-
 
     }
 
@@ -123,7 +119,6 @@ public class RetrofitDelegateHelper {
         ordernoteService = retrofit.create(OrderNoteService.class);
         areaDeliveryService = retrofit.create(AreaDeliveryService.class);
     }
-
 
     public RetrofitDelegateHelper(int idOrder, int idUser,String strArea) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
 
@@ -210,36 +205,164 @@ public class RetrofitDelegateHelper {
         ordernoteService = retrofit.create(OrderNoteService.class);
         areaDeliveryService = retrofit.create(AreaDeliveryService.class);
     }
+    //endregion
 
-    // Método para calcular el nonce de OAuth1.0
+    //region Methods to initiate params for calls Retrofito's
+    //Methods for calculating the nonce of OAuth1.0
     private String getNonce() {
 
         String oauthNonce = UUID.randomUUID().toString().replaceAll("-", "");
         return oauthNonce;
     }
-
-    // Método que devuelve el current time del sistema en segundos desde 1-1-1970
+    // Method that returns the current system time in seconds since 1/1/1970
     private static String getTimestamp() {
         Long tsLong = System.currentTimeMillis() / 1000;
         String ts = tsLong.toString();
         return ts;
     }
-
-    // Método para calcular el signature
+    //Methods for calculating the signature
     public String getSignature(String oauth_consumer_secret) throws
             UnsupportedEncodingException, NoSuchAlgorithmException,
             InvalidKeyException {
+        //Get Base String with pareams
         String baseString = getBaseString();
-        SecretKeySpec key = new SecretKeySpec((oauth_consumer_secret).getBytes("UTF-8"), "HMAC-SHA1");
-        Mac mac = Mac.getInstance("HMAC-SHA1");
+        //Create Secret Key
+        SecretKeySpec key = new SecretKeySpec((oauth_consumer_secret).getBytes(Constants.OAUTH_UTF_8), Constants.OAUTH_SIGNATURE_METHOD);
+        //Get Mac instance in bytes
+        Mac mac = Mac.getInstance(Constants.OAUTH_SIGNATURE_METHOD);
         mac.init(key);
+        byte[] bytes = mac.doFinal(baseString.getBytes(Constants.OAUTH_UTF_8));
 
-        byte[] bytes = mac.doFinal(baseString.getBytes("UTF-8"));
-
-        // Codificamos en Base64, realizamos un trim y retornamos
+        // Base64 encode, conducted a trim, and return
         return new String(Base64.encodeToString(bytes, 0).trim());
     }
 
+    //Method that build baseString depending getServiceCode
+    private String getBaseString() {
+
+        //region Initiate variables
+        String baseString = "";
+        Globals g = Globals.getInstance(); //get instance global
+        int serviceCode = g.getServiceCode();//get service code
+        //endregion
+
+        // In fuction of the service called, we do a post o get signature calculation
+        //region Build BASE_URL_CODIFIED
+        if (serviceCode == Constants.PROBLEM_drop_food) {
+            Log.d("Service Code", "0, haciendo POST");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Feditfromapp%2F" + idOrder;
+            baseString = "POST&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_get) {
+            Log.d("Service Code", "1, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders";
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_accepted) {
+            Log.d("Service Code", "2, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faccepted";
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_accepted_byuser) {
+            Log.d("Service Code", "3, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faccepted%2F" + idUser;
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_problem) {
+            Log.d("Service Code", "4, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fproblem";
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_problem_byuser) {
+            Log.d("Service Code", "5, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fproblem%2F" + idUser;
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_notes) {
+            Log.d("Service Code", "6, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2F" + idOrder + "%2Fcomments";
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode ==  Constants.SERVICE_CODE_order_edit_acceptbymotodriver) {
+            Log.d("Service Code", "7, haciendo POST");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fedit_order_acceptbymotodriver%2F" + idOrder;
+            baseString = "POST&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_problem_add_completed) {
+            Log.d("Service Code", "8, haciendo POST");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faddincidencia_completed%2F" + idOrder;
+            baseString = "POST&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_problem_add_description) {
+            Log.d("Service Code", "9, haciendo POST");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faddincidencia_description%2F" + idOrder;
+            baseString = "POST&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_notes_byuser) {
+            Log.d("Service Code", "10, haciendo POST");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2F" + idOrder + "%2Fcomments";
+            baseString = "POST&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_history) {
+            Log.d("Service Code", "11, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fhistory%2F" + idUser;
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_count) {
+            Log.d("Service Code", "12, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_all";
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_count_byuser) {
+            Log.d("Service Code", "13, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_byIdUser%2F" + idUser;
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_edit_cancelbymotodriver) {
+            Log.d("Service Code", "14, haciendo POST");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fedit_order_cancelbymotodriver%2F" + idOrder;
+            baseString = "POST&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_accepted_byareadelivery) {
+            Log.d("Service Code", "15, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faccepted_byareadelivery%2F" + strArea;
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_accepted_byuser_byareadelivery) {
+            Log.d("Service Code", "16, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faccepted_byareadelivery%2F" + idUser + "%2F" + strArea;
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_notesclient) {
+            Log.d("Service Code", "17, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2F" + idOrder + "%2Fnotes";
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_zone) {
+            Log.d("Service Code", "18, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_areadelivery";
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_number_max_orders_accepted) {
+            Log.d("Service Code", "19, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_maxnumber_orders_accepted";
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_number_max_orders_visible) {
+            Log.d("Service Code", "20, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_maxnumber_orders_visible_inlist";
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_count_byareadelivery) {
+            Log.d("Service Code", "21, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_byareadelivery%2F" + strArea;
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_count_byuser_byareadelivery) {
+            Log.d("Service Code", "22, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_byuserbyareadelivery%2F" + idUser + "%2F" + strArea;
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        } else if (serviceCode == Constants.SERVICE_CODE_order_byidorder) {
+            Log.d("Service Code", "23, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2F" + idOrder;
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        }
+        else if (serviceCode == Constants.SERVICE_CODE_max_time_orderchangecolor_inMyorders) {
+            Log.d("Service Code", "24, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_driver_max_time";
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        }
+        //endregion
+
+        baseString = baseString + "&oauth_consumer_key%3D" + oauth_consumer_key
+                + "%26oauth_nonce%3D" + oauth_nonce + "%26oauth_signature_method%3D" + "HMAC-SHA1" +
+                "%26oauth_timestamp%3D" + oauth_timestamp;
+        return baseString;
+    }
+
+    //endregion
+
+    //region Methods to access a BBDD
+
+    //Obtain ALL list of orders
     public void getListaPedidos(final AlRecibirListaDelegate delegate) {
         orderService.list(oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderSearch>() {
@@ -249,21 +372,20 @@ public class RetrofitDelegateHelper {
                 Log.d("URL getListaPedidos: ", response.raw().request().url().toString());
                 Log.d("CODE getListaPedidos: ", String.valueOf(response.code()));
 
-                // Al recibir datos llamamos al método
+                //When receiving data call the method
                 delegate.listaRecibida(response.body());
                 delegate.closedialog();
                 }
                 else {
                     Log.d("error: ", String.valueOf(response.errorBody()));
                     delegate.closedialog();
-
                 }
             }
 
             @Override
             public void onFailure(Call<OrderSearch> call, Throwable t) {
 
-                // En caso que no haya respuesta lanzamos el método para que indique el error
+                // If there is no response we launched the method to indicate the error
                 delegate.errorRecibido(t);
                 Log.d("Error: ", t.toString());
                 delegate.closedialog();
@@ -271,6 +393,7 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Obtain all orders filtered by orderstatus = "rest_has_accepted" , motodriver = 0 and shipping_lines_method_id = "distance_rate"
     public void getOrdersAccepted(final listaRecibidaOrdenada delegate) {
         orderService.list_accepted(oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderSearch>() {
@@ -302,18 +425,19 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Obtain all orders filtered by orderstatus different (rest_has_accepted,problem, order_delivered, order_delivered_w_problem ) , with motodriver and shipping_lines_method_id = "distance_rate"
     public void getOrdersByUser(final AlRecibirListaDelegate delegate) {
         orderService.list_byuser(idUser, oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderSearch>() {
             @Override
             public void onResponse(Call<OrderSearch> call, Response<OrderSearch> response) {
                 if (response.isSuccessful()) {
-                Log.d("URL getOrdersAccepted: ", response.raw().request().url().toString());
-                Log.d("CODE OrdersAcce : ", String.valueOf(response.code()));
+                    Log.d("URL getOrdersAccepted: ", response.raw().request().url().toString());
+                    Log.d("CODE OrdersAcce : ", String.valueOf(response.code()));
 
-                // Al recibir datos llamamos al método
-                delegate.listaRecibida(response.body());
-                delegate.closedialog();
+                    // Al recibir datos llamamos al método
+                    delegate.listaRecibida(response.body());
+                    delegate.closedialog();
                 }
                 else {
                     Log.d("error: ", String.valueOf(response.errorBody()));
@@ -331,6 +455,7 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Obtain all orders filtered by orderstatus = "problem" , motodriver = 0  and shipping_lines_method_id = "distance_rate"
     public void getOrdersProblem(final AlRecibirListaDelegate delegate) {
         orderService.list_problem(oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderSearch>() {
@@ -362,12 +487,12 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Obtain all orders filtered by orderstatus = "problem" , motodriver = id user of aplication and shipping_lines_method_id = "distance_rate"
     public void getOrdersProblemByIdUser(final AlRecibirListaDelegate delegate) {
         orderService.list_problembyiduser(idUser, oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderSearch>() {
             @Override
             public void onResponse(Call<OrderSearch> call, Response<OrderSearch> response) {
-
                 if (response.isSuccessful()) {
                     Log.d("URL OrdersProblemById: ", response.raw().request().url().toString());
                     Log.d("CODE OrdProblemById: ", String.valueOf(response.code()));
@@ -375,16 +500,12 @@ public class RetrofitDelegateHelper {
                     delegate.listaRecibida(response.body());
                     delegate.closedialog();
                 } else {
-
                     Log.d("error: ", String.valueOf(response.errorBody()));
                     delegate.closedialog();
-
                 }
             }
-
             @Override
             public void onFailure(Call<OrderSearch> call, Throwable t) {
-
                 // En caso que no haya respuesta lanzamos el método para que indique el error
                 delegate.errorRecibido(t);
                 Log.d("Error: ", t.toString());
@@ -393,6 +514,7 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Obtain the admin order notes for an order
     public void getOrderNotesByIdOrder(final AlRecibirListaCommentsDelegate delegate) {
         ordernoteService.getlistNoteOrder(idOrder, oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderNoteGet>() {
@@ -419,6 +541,7 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Obtain the admin order notes for an order ( NOT USED - copy of getOrderNotesByIdOrder)
     public void getOrderNotesClientByIdOrder(final AlRecibirListaCommentsDelegate delegate) {
         ordernoteService.getlistNoteClientOrder(idOrder, oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderNoteGet>() {
@@ -446,6 +569,7 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Obtain all orders filtered by orderstatus = "order_delivered_w_problem"  and "order_delivered"   by motodriver
     public void getOrderHistorical(final AlRecibirListaDelegate delegate) {
         orderService.list_history(idUser, oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderSearch>() {
@@ -474,16 +598,16 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //Update status of order .Receive New Status , the identifier of motodriver (id user of app) and preferences.
     public void updateStatus(String status, Integer idUserDriver, final SharedPreferences prefs) {
 
-
-        Globals g = Globals.getInstance();
-        int screenCode = g.getScreenCode();
-
-        Order order = new Order();
-        OrderUpdate orderUpdate = new OrderUpdate();
-
-        String motodriver = order.getMotodriver();
+        //region Initiate variables
+        Globals g = Globals.getInstance(); //Get instance of global
+        int screenCode = g.getScreenCode(); //Get code of screen
+        Order order = new Order(); //Init new order
+        OrderUpdate orderUpdate = new OrderUpdate();//Init new OrderUpdate
+        String motodriver = order.getMotodriver();  //Get id of motodriver from order.
+        //endregion
 
         if (screenCode == 0) {
 
@@ -493,6 +617,7 @@ public class RetrofitDelegateHelper {
             // Setting the motodriver
             order.setMotodriver(String.valueOf(idUser));
             orderUpdate.setOrder(order);
+
             orderService.acceptOrderByMotodriver(idOrder, orderUpdate, oauth_consumer_key, oauth_nonce, oauth_signature,
                     oauth_signature_method, oauth_timestamp).enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -501,9 +626,9 @@ public class RetrofitDelegateHelper {
                         Log.d("URL accept: ", response.raw().request().url().toString());
                         Log.d("CODE_POST: ", String.valueOf(response.code()));
                         SharedPreferences.Editor editor = prefs.edit();
-                        inumMyOrdersWithouProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
-                        inumMyOrdersWithouProblems = inumMyOrdersWithouProblems + 1;
-                        editor.putInt("numMyOrdersWithouProblems", inumMyOrdersWithouProblems);
+                        inumMyOrdersWithoutProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
+                        inumMyOrdersWithoutProblems = inumMyOrdersWithoutProblems + 1;
+                        editor.putInt("numMyOrdersWithouProblems", inumMyOrdersWithoutProblems);
                         editor.commit();
                     } else {
                         Log.d("error: ", String.valueOf(response.errorBody()));
@@ -529,9 +654,9 @@ public class RetrofitDelegateHelper {
                     SharedPreferences.Editor editor = prefs.edit();
                     if(newStatus.equals(Constants.ORDER_STATUS_order_delivered))
                     {
-                        inumMyOrdersWithouProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
-                        inumMyOrdersWithouProblems = inumMyOrdersWithouProblems - 1;
-                        editor.putInt("numMyOrdersWithouProblems",inumMyOrdersWithouProblems);
+                        inumMyOrdersWithoutProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
+                        inumMyOrdersWithoutProblems = inumMyOrdersWithoutProblems - 1;
+                        editor.putInt("numMyOrdersWithouProblems",inumMyOrdersWithoutProblems);
                         editor.commit();
                     }
                 }
@@ -556,9 +681,9 @@ public class RetrofitDelegateHelper {
                         Log.d("URL 3_POST: ", response.raw().request().url().toString());
                         Log.d("CODE_POST: ", String.valueOf(response.code()));
                         SharedPreferences.Editor editor = prefs.edit();
-                        inumMyOrdersWithouProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
-                        inumMyOrdersWithouProblems = inumMyOrdersWithouProblems - 1;
-                        editor.putInt("numMyOrdersWithouProblems", inumMyOrdersWithouProblems);
+                        inumMyOrdersWithoutProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
+                        inumMyOrdersWithoutProblems = inumMyOrdersWithoutProblems - 1;
+                        editor.putInt("numMyOrdersWithouProblems", inumMyOrdersWithoutProblems);
                         editor.commit();
                     } else {
                         Log.d("error: ", String.valueOf(response.errorBody()));
@@ -632,26 +757,21 @@ public class RetrofitDelegateHelper {
     }
 
     public void getOrdersCount(final numOrders numOrders) {
-
         orderService.count(oauth_consumer_key, oauth_nonce, oauth_signature,
                 oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderCount>() {
-                                                                     @Override
-                                                                     public void onResponse(Call<OrderCount> call, Response<OrderCount> response) {
+                 @Override
+                 public void onResponse(Call<OrderCount> call, Response<OrderCount> response) {
 
-                                                                         Log.d("URL getOrdersCount: ", response.raw().request().url().toString());
-                                                                         Log.d("CODE getOrdersCount: ", String.valueOf(response.code()));
-
-                                                                         numOrders.setText(response.body(), "1");
-                                                                     }
-
-                                                                     @Override
-                                                                     public void onFailure(Call<OrderCount> call, Throwable t) {
-
-                                                                         Log.d("Error", "No respuesta");
-                                                                     }
-                                                                 }
+                     Log.d("URL getOrdersCount: ", response.raw().request().url().toString());
+                     Log.d("CODE getOrdersCount: ", String.valueOf(response.code()));
+                     numOrders.setText(response.body(), "1");
+                 }
+                 @Override
+                 public void onFailure(Call<OrderCount> call, Throwable t) {
+                     Log.d("Error", "No respuesta");
+                 }
+             }
         );
-
     }
 
     public void getOrdersCountByIdUser(final numOrders numOrders) {
@@ -662,13 +782,11 @@ public class RetrofitDelegateHelper {
 
                 Log.d("URL OrdersProblemById: ", response.raw().request().url().toString());
                 Log.d("CODE OrdProblemById: ", String.valueOf(response.code()));
-
                 numOrders.setText(response.body(), "2");
             }
 
             @Override
             public void onFailure(Call<OrderCount> call, Throwable t) {
-
                 Log.d("Error", "No respuesta");
             }
         });
@@ -681,7 +799,6 @@ public class RetrofitDelegateHelper {
                 if (response.isSuccessful()) {
                     Log.d("URL OrdCountByArDel: ", response.raw().request().url().toString());
                     Log.d("CODE OrdCountByArDel: ", String.valueOf(response.code()));
-
                     numOrders.setText(response.body(), "1");
                 }
                 else {
@@ -691,7 +808,6 @@ public class RetrofitDelegateHelper {
 
             @Override
             public void onFailure(Call<OrderCount> call, Throwable t) {
-
                 Log.d("Error", "No respuesta");
             }
         });
@@ -704,7 +820,6 @@ public class RetrofitDelegateHelper {
                 if (response.isSuccessful()) {
                     Log.d("URL OrdCountByArDel: ", response.raw().request().url().toString());
                     Log.d("CODE OrdCountByArDel: ", String.valueOf(response.code()));
-
                     numOrders.setText(response.body(), "2");
                 }
                 else {
@@ -714,7 +829,6 @@ public class RetrofitDelegateHelper {
 
             @Override
             public void onFailure(Call<OrderCount> call, Throwable t) {
-
                 Log.d("Error", "No respuesta");
             }
         });
@@ -737,7 +851,6 @@ public class RetrofitDelegateHelper {
                 } else {
                     bResult.hascreatecomment(false);
                     Log.d("error: ", String.valueOf(response.errorBody()));
-
                 }
             }
 
@@ -745,7 +858,6 @@ public class RetrofitDelegateHelper {
             public void onFailure(Call<OrderNoteGet> call, Throwable t) {
                 bResult.hascreatecomment(false);
                 Log.d("Error", "No respuesta");
-
             }
         });
     }
@@ -954,7 +1066,7 @@ public class RetrofitDelegateHelper {
             }
         });
     }
-
+    //endregion
 
     private String orderState(String orderstatus,int screenCode) {
 
@@ -983,134 +1095,6 @@ public class RetrofitDelegateHelper {
         }
         return newStatus;
     }
-
-    //Method that build baseString depending getServiceCode
-    private String getBaseString() {
-        String baseString = "";
-        Globals g = Globals.getInstance();
-        int serviceCode = g.getServiceCode();
-
-       /* switch (g.getServiceCode()){
-            case  Constants.SERVICE_CODE_order_edit:
-                Log.d("Service Code", "0, haciendo POST");
-                BASE_URL_CODIFIED = "http%3A%2F%2Fzascomidaentuboca.es%2Fwc-api%2Fv2%2Forders%2Feditfromapp%2F" + idOrder;
-                baseString = "POST&" + BASE_URL_CODIFIED ;
-                break;
-            case Constants.SERVICE_CODE_order_get:
-                Log.d("Service Code", "1, haciendo GET");
-                BASE_URL_CODIFIED = "http%3A%2F%2Fzascomidaentuboca.es%2Fwc-api%2Fv2%2Forders";
-                baseString = "GET&" + BASE_URL_CODIFIED ;
-                break;
-        }*/
-
-        // In fuction of the service called, we do a post o get signature calculation
-        if (serviceCode == Constants.PROBLEM_drop_food) {
-            Log.d("Service Code", "0, haciendo POST");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Feditfromapp%2F" + idOrder;
-            baseString = "POST&" + BASE_URL_CODIFIED;
-
-        } else if (serviceCode == Constants.SERVICE_CODE_order_get) {
-            Log.d("Service Code", "1, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == Constants.SERVICE_CODE_order_accepted) {
-            Log.d("Service Code", "2, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faccepted";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 3) {
-            Log.d("Service Code", "3, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faccepted%2F" + idUser;
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 4) {
-            Log.d("Service Code", "4, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fproblem";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 5) {
-            Log.d("Service Code", "5, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fproblem%2F" + idUser;
-
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 6) {
-            Log.d("Service Code", "6, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2F" + idOrder + "%2Fcomments";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 7) {
-            Log.d("Service Code", "7, haciendo POST");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fedit_order_acceptbymotodriver%2F" + idOrder;
-            baseString = "POST&" + BASE_URL_CODIFIED;
-
-        } else if (serviceCode == 8) {
-            Log.d("Service Code", "8, haciendo POST");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faddincidencia_completed%2F" + idOrder;
-            baseString = "POST&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 9) {
-            Log.d("Service Code", "9, haciendo POST");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faddincidencia_description%2F" + idOrder;
-            baseString = "POST&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 10) {
-            Log.d("Service Code", "10, haciendo POST");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2F" + idOrder + "%2Fcomments";
-            baseString = "POST&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 11) {
-            Log.d("Service Code", "11, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fhistory%2F" + idUser;
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 12) {
-            Log.d("Service Code", "12, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_all";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 13) {
-            Log.d("Service Code", "13, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_byIdUser%2F" + idUser;
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 14) {
-            Log.d("Service Code", "14, haciendo POST");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fedit_order_cancelbymotodriver%2F" + idOrder;
-            baseString = "POST&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 15) {
-            Log.d("Service Code", "15, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faccepted_byareadelivery%2F" + strArea;
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 16) {
-            Log.d("Service Code", "16, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faccepted_byareadelivery%2F" + idUser + "%2F" + strArea;
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 17) {
-            Log.d("Service Code", "17, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2F" + idOrder + "%2Fnotes";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 18) {
-            Log.d("Service Code", "18, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_areadelivery";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 19) {
-            Log.d("Service Code", "19, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_maxnumber_orders_accepted";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 20) {
-            Log.d("Service Code", "20, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_maxnumber_orders_visible_inlist";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 21) {
-            Log.d("Service Code", "21, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_byareadelivery%2F" + strArea;
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 22) {
-            Log.d("Service Code", "22, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_byuserbyareadelivery%2F" + idUser + "%2F" + strArea;
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == 23) {
-            Log.d("Service Code", "23, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2F" + idOrder;
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        }
-
-        baseString = baseString + "&oauth_consumer_key%3D" + oauth_consumer_key
-                + "%26oauth_nonce%3D" + oauth_nonce + "%26oauth_signature_method%3D" + "HMAC-SHA1" +
-                "%26oauth_timestamp%3D" + oauth_timestamp;
-        return baseString;
-    }
-
 
 
     public interface AlRecibirListaDelegate {

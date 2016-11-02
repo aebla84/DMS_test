@@ -38,7 +38,7 @@ public class Constants {
     public static final int SERVICE_CODE_order_count_byareadelivery = 21;
     public static final int SERVICE_CODE_order_count_byuser_byareadelivery = 22;
     public static final int SERVICE_CODE_order_byidorder = 23;
-    public static final int SERVICE_CODE_max_time = 24;
+    public static final int SERVICE_CODE_max_time_orderchangecolor_inMyorders = 24;
 
     public static final int PROBLEM_drop_food = 0;
     public static final int PROBLEM_wrong_plate = 1;
@@ -84,6 +84,8 @@ public class Constants {
 
     public static final String OAUTH_CONSUMER_KEY = "ck_40b166eb08943c530d82aab33c3bdb572ad0966d";
     public static final String OAUTH_CONSUMER_SECRET = "cs_beaa6104237452538253e9df1160163daa7b98ae";
+    public static final String OAUTH_SIGNATURE_METHOD = "HMAC-SHA1";
+    public static final String OAUTH_UTF_8 = "UTF-8";
 
     public static final String ORDER_FOODPRIORITY_HIGHT = "1";
     public static final String ORDER_FOODPRIORITY_MEDIUM = "2";
@@ -131,6 +133,8 @@ public class Constants {
     public static final String  ARGUMENT_PREVPAGE_TITLE = "prevpage_title";
     public static final String  ARGUMENT_ORIGINPAGE = "originPage";
 
-
-
+    public static final int screenCode_0 = 0;
+    public static final int screenCode_1 = 1;
+    public static final int screenCode_2 = 2;
+    public static final int screenCode_3 = 3;
 }

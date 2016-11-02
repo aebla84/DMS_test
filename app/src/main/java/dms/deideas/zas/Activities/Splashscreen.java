@@ -102,8 +102,7 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
         callRetrofit();
         restHelper.get_maxnumber_orders_visible(this);
 
-
-        g.setServiceCode(Constants.SERVICE_CODE_max_time);
+        g.setServiceCode(Constants.SERVICE_CODE_max_time_orderchangecolor_inMyorders);
         callRetrofit();
         restHelper.get_maxtime(this);
 
