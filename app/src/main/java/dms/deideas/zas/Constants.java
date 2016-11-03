@@ -111,6 +111,9 @@ public class Constants {
     public static final String PREFERENCES_AREA_DELIVERY = "areaDelivery";
     public static final String PREFERENCES_AREA_DELIVERY_STRING = "strAreaDelivery";
     public static final String PREFERENCES_IS_ORDER_CHANGED = "isOrderChanged";
+    public static final String PREFERENCES_NUMBERS_ORDERS= "numOrders";
+    public static final String PREFERENCES_NUMBERS_ORDERS_ACCEPTED= "numMyOrders";
+    public static final String PREFERENCES_NUMBERS_ORDERS_ACCEPTEDBYDRIVER= "numMyOrdersWithouProblems";
 
     public static final int HOMEFRAGMENT_CODE = 0;
     public static final int ORDERSFRAGMENT_CODE = 1;
@@ -125,16 +128,20 @@ public class Constants {
     public static final String MYORDERSFRAGMENT = "myorders";
     public static final String DETAILORDERSFRAGMENT = "detailorders";
     public static final String DETAILMYORDERSFRAGMENT = "detailmyorders";
-    public static final String HISTORICALFRAGMENT = "detailmyorders";
+    public static final String HISTORICALFRAGMENT = "history";
     public static final String DIALOGFRAGMENT = "dialog";
 
     public static final String  ARGUMENT_TITLE = "title";
     public static final String  ARGUMENT_ORDER = "order";
     public static final String  ARGUMENT_PREVPAGE_TITLE = "prevpage_title";
     public static final String  ARGUMENT_ORIGINPAGE = "originPage";
+    public static final String  ARGUMENT_MOTODRIVER = "motodriver";
 
     public static final int screenCode_detailOrders = 0;
     public static final int screenCode_detailMyOrders = 1;
     public static final int screenCode_detailMyOrders_disallocate = 2;
     public static final int screenCode_detailMyOrders_disallocateProblem = 3;
+
+    public static final int MAP_CONTROL_Restaurant = 0;
+    public static final int MAP_CONTROL_Client = 1;
 }

@@ -43,6 +43,7 @@ import dms.deideas.zas.Services.Retrofit.RetrofitDelegateHelper;
 
 public class HistoricalFragment extends Fragment implements  RetrofitDelegateHelper.AlRecibirListaDelegate, HistoricalAdapter.HistoricalListener{
 
+    //region Declare variables
     private String title,originPage="History";
     private String motodriver;
     private RecyclerView recycler;
@@ -52,17 +53,17 @@ public class HistoricalFragment extends Fragment implements  RetrofitDelegateHel
     private RetrofitDelegateHelper restHelper;
     private View view;
     private ProgressDialog progress;
+    //endregion
 
     public HistoricalFragment() {
 
     }
 
-
     public static HistoricalFragment newInstance(String title, String motodriver) {
 
         Bundle b = new Bundle();
-        b.putString("title", title);
-        b.putString("motodriver", motodriver);
+        b.putString(Constants.ARGUMENT_TITLE, title);
+        b.putString(Constants.ARGUMENT_MOTODRIVER, motodriver);
 
         HistoricalFragment fragment = new HistoricalFragment();
         fragment.setArguments(b);
@@ -75,8 +76,7 @@ public class HistoricalFragment extends Fragment implements  RetrofitDelegateHel
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.historical_fragment, container, false);
 
-        ((MainActivity) getActivity()).setTitle(getArguments().getString("title"));
-
+        ((MainActivity) getActivity()).setTitle(getArguments().getString(Constants.ARGUMENT_TITLE));
         recycler = (RecyclerView) view.findViewById(R.id.recycle);
         recycler.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recycler.setAdapter(adapter);
@@ -93,10 +93,11 @@ public class HistoricalFragment extends Fragment implements  RetrofitDelegateHel
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        title = getArguments().getString("title");
-        motodriver = getArguments().getString("motodriver");
-
+        title = getArguments().getString(Constants.ARGUMENT_TITLE);
+        motodriver = getArguments().getString(Constants.ARGUMENT_MOTODRIVER);
         adapter = new HistoricalAdapter(this);
+
+        //region Order History Orders
         adapter.setComparador(new Comparator<Order>() {
             @Override
             public int compare(Order lhs, Order rhs) {
@@ -117,33 +118,31 @@ public class HistoricalFragment extends Fragment implements  RetrofitDelegateHel
                 return 0;
             }
         });
+        //endregion
+
         final SharedPreferences prefs
                 = getActivity().getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
-
         int idUser = prefs.getInt(Constants.PREFERENCES_USER_ID, 0);
 
-       /* progress = ProgressDialog.show( getContext(), null, "Cargando", false, false );
-        progress.getWindow().setBackgroundDrawable( new ColorDrawable( Color.WHITE ) );*/
-
+        //region Create and Show progress dialog
         progress = new ProgressDialog(getContext());
         progress.show();
         progress.setContentView(R.layout.custom);
         progress.setCanceledOnTouchOutside(false);
-
 
         TextView text = (TextView) progress.findViewById(R.id.text);
         ImageView image = (ImageView) progress.findViewById(R.id.zasSpin);
 
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.zas_spin);
         image.startAnimation(animation);
+        //endregion
 
-        // Indicates the service call
+        //region Indicates the service call -- getOrderHistorical
         Globals g = Globals.getInstance();
         g.setServiceCode(Constants.SERVICE_CODE_history);
         try {
             restHelper = new RetrofitDelegateHelper(0, idUser);
             restHelper.getOrderHistorical(this);
-
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
@@ -151,8 +150,8 @@ public class HistoricalFragment extends Fragment implements  RetrofitDelegateHel
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
+        //endregion
     }
-
 
     @Override
     public void onStart() {
@@ -168,12 +167,9 @@ public class HistoricalFragment extends Fragment implements  RetrofitDelegateHel
         else
         {
             int lengthLong = Toast.LENGTH_LONG;
-            Toast.makeText(view.getContext(),"NO HAY FINALIZADOS", lengthLong);
+            Toast.makeText(view.getContext(), R.string.toast_No_orders_ended, lengthLong);
         }
-
     }
-
-
 
     @Override
     public void errorRecibido(Object error) {
@@ -187,7 +183,6 @@ public class HistoricalFragment extends Fragment implements  RetrofitDelegateHel
 
     @Override
     public void arrayRecibido(ArrayList<String> body) {
-
     }
 
     @Override
@@ -210,7 +205,6 @@ public class HistoricalFragment extends Fragment implements  RetrofitDelegateHel
 
     }
 
-
     @Override
     public void onOrderClicked(View card, Order order) {
 
@@ -221,7 +215,7 @@ public class HistoricalFragment extends Fragment implements  RetrofitDelegateHel
         fragmentManager
                 .beginTransaction()
                 .replace(R.id.frame, fragment)
-                .addToBackStack("detailmyorders")
+                .addToBackStack(Constants.DETAILMYORDERSFRAGMENT)
                 .commit();
 
         ((MainActivity) getActivity()).setTitle(title);

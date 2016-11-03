@@ -38,9 +38,9 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
     public static DialogFragment newInstance(String title, Order order, Integer intIdUser,String originPage) {
         Bundle b = new Bundle();
         idUser = intIdUser;
-        b.putString("title", title);
-        b.putString("originPage", originPage);
-        b.putSerializable("order", order);
+        b.putString(Constants.ARGUMENT_TITLE, title);
+        b.putString(Constants.ARGUMENT_ORIGINPAGE, originPage);
+        b.putSerializable(Constants.ARGUMENT_ORDER, order);
         DialogFragment fragment = new DialogFragment();
         fragment.setArguments(b);
         return fragment;
@@ -48,9 +48,8 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        String title = getArguments().getString("title");
-        order = (Order) getArguments().getSerializable("order");
+        String title = getArguments().getString(Constants.ARGUMENT_TITLE);
+        order = (Order)getArguments().getSerializable(Constants.ARGUMENT_ORDER);
 
         return new AlertDialog.Builder(getActivity())
                 .setIcon(R.drawable.ic_access_time_black_24dp)
@@ -62,9 +61,6 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
 
                         String status = orderState(order.getOrderstatus());
                         Integer idUserDriver = 0;
-                        //Toast.makeText(getContext(), toastMessage, Toast.LENGTH_SHORT).show();
-
-
                         // Making Post
                         if(g.getScreenCode() == Constants.screenCode_detailOrders){
                             //Toast.makeText(getContext(), " POST 7", Toast.LENGTH_SHORT).show();
@@ -83,10 +79,9 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
                             g.setServiceCode(Constants.SERVICE_CODE_order_edit);
                         }
 
-
                         try {
-                            restHelper = new RetrofitDelegateHelper(order.getId(),idUser);
                             SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+                            restHelper = new RetrofitDelegateHelper(order.getId(),idUser);
                             restHelper.updateStatus(order.getOrderstatus(),idUserDriver, prefs);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
@@ -110,7 +105,6 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
 
                             ((MainActivity) getActivity()).setTitle(title);
 
-
                         } else if (g.getScreenCode() == Constants.screenCode_detailMyOrders || g.getScreenCode() == Constants.screenCode_detailMyOrders_disallocateProblem) {
                             // return to My Orders Fragment
                             String title = getResources().getString(R.string.myorders_sb_title);
@@ -121,19 +115,15 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
                                     .replace(R.id.frame, fragment)
                                     .addToBackStack(null)
                                     .commit();
-
                             ((MainActivity) getActivity()).setTitle(title);
-
                         }
-
-
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (g.getScreenCode() == 0) {
+                        if (g.getScreenCode() == Constants.screenCode_detailOrders) {
 
                             // return to Detail Order Fragment
                             String title = getResources().getString(R.string.order_id_item) + " : " + String.valueOf(order.getId());
@@ -146,7 +136,7 @@ public class DialogFragment extends android.support.v4.app.DialogFragment {
                                     .commit();
                             ((MainActivity) getActivity()).setTitle(title);
 
-                        } else if (g.getScreenCode() == 1) {
+                        } else if (g.getScreenCode() == Constants.screenCode_detailMyOrders) {
                             // return to Detail Order Fragment
                             String title = getResources().getString(R.string.order_id_item) + " : " + String.valueOf(order.getId());
                             DetailMyOrderFragment fragment = DetailMyOrderFragment.newInstance(title, order,originPage);

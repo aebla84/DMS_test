@@ -19,7 +19,6 @@ import dms.deideas.zas.Constants;
 import dms.deideas.zas.Model.Order;
 import dms.deideas.zas.R;
 
-import dms.deideas.zas.Utils;
 
 /**
  * Created by dmadmin on 06/07/2016.
@@ -28,9 +27,8 @@ public class HistoricalAdapter extends RecyclerView.Adapter<HistoricalAdapter.Hi
 
     private List<Order> orders;
     private HistoricalListener listener;
-
     private Comparator<Order> comparator;
-    private Utils utils;
+
 
     public HistoricalAdapter(HistoricalListener listener) {
         this.orders = new ArrayList<>();
@@ -41,7 +39,6 @@ public class HistoricalAdapter extends RecyclerView.Adapter<HistoricalAdapter.Hi
         this.orders = orders;
         this.listener = listener;
     }
-
 
     @Override
     public HistoricalAdapter.HistoricalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -100,7 +97,6 @@ public class HistoricalAdapter extends RecyclerView.Adapter<HistoricalAdapter.Hi
 
     public class HistoricalViewHolder extends RecyclerView.ViewHolder {
         public TextView idorder, date, state, money;
-
         public View card;
 
         public HistoricalViewHolder(View itemView) {
@@ -115,40 +111,8 @@ public class HistoricalAdapter extends RecyclerView.Adapter<HistoricalAdapter.Hi
     }
 
     public interface HistoricalListener {
-
         void onOrderClicked(View card, Order order);
     }
-
-    public String getOrderStatusName(Context context, String status) {
-        String ret_status = status;
-        switch (ret_status) {
-            case Constants.ORDER_STATUS_problem:
-                ret_status = context.getResources().getString(R.string.problem_status);
-                break;
-            case Constants.ORDER_STATUS_driver_has_accepted:
-                ret_status = context.getResources().getString(R.string.motodriver_accept_status);
-                break;
-            case Constants.ORDER_STATUS_rest_has_accepted:
-                ret_status = context.getResources().getString(R.string.rest_has_accepted_status);
-                break;
-            case  Constants.ORDER_STATUS_driver_in_rest:
-                ret_status = context.getResources().getString(R.string.driver_in_rest_status);
-                break;
-            case Constants.ORDER_STATUS_driver_on_road:
-                ret_status = context.getResources().getString(R.string.driver_on_road_status);
-                break;
-            case Constants.ORDER_STATUS_order_delivered:
-                ret_status = context.getResources().getString(R.string.order_delivered_status);
-                break;
-            default:
-                ret_status = status;
-                break;
-        }
-
-        return ret_status;
-
-    }
-
 
     public void setComparador(Comparator<Order> comparator) {
         this.comparator = comparator;

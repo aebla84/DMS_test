@@ -58,6 +58,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class HomeFragment extends Fragment implements View.OnClickListener, RetrofitDelegateHelper.numOrders, RetrofitDelegateHelper.AlRecibirListaDelegate {
 
+    //region Declare variables
     private ImageButton order;
     private ImageButton myorder;
     private TextView numOrders;
@@ -69,12 +70,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Retr
     private Integer idUser;
     private String areadelivery;
     private SharedPreferences prefs;
-
+    //endregion
 
     public static HomeFragment newInstance(String title) {
         HomeFragment fragment = new HomeFragment();
         Bundle b = new Bundle();
-        b.putString("title", title);
+        b.putString(Constants.ARGUMENT_TITLE, title);
         fragment.setArguments(b);
         return fragment;
     }
@@ -87,11 +88,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Retr
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
 
-        //getActivity().setTitle(getArguments().getString("title"));
-        ((MainActivity) getActivity()).setTitle(getArguments().getString("title"));
+        ((MainActivity) getActivity()).setTitle(getArguments().getString(Constants.ARGUMENT_TITLE));
 
         readPreferences();
-
         setUpView(view);
 
         Globals g = Globals.getInstance();
@@ -104,8 +103,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Retr
     private void readPreferences() {
         prefs = getActivity().getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         idUser = prefs.getInt(Constants.PREFERENCES_USER_ID, 0);
-        int_numOrders = prefs.getInt("numOrders", 0);
-        int_numMyOrders = prefs.getInt("numMyOrders", 0);
+        int_numOrders = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS, 0);
+        int_numMyOrders = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS_ACCEPTED, 0);
         areadelivery =  prefs.getString(Constants.PREFERENCES_AREA_DELIVERY, "");
     }
 
@@ -113,10 +112,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Retr
 
         order = (ImageButton) view.findViewById(R.id.order);
         myorder = (ImageButton) view.findViewById(R.id.myorder);
-
         numOrders = (TextView) view.findViewById(R.id.numOrders);
         numMyOrders = (TextView) view.findViewById(R.id.numMyOrders);
-
 
         order.setOnClickListener(this);
         myorder.setOnClickListener(this);
@@ -136,20 +133,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Retr
             fragmentManager
                     .beginTransaction()
                     .replace(R.id.frame, fragment)
-                    .addToBackStack("orders")
+                    .addToBackStack(Constants.ORDERSFRAGMENT)
                     .commit();
             ((MainActivity) getActivity()).setTitle(title);
         } else {
             String title = getResources().getString(R.string.myorders_sb_title);
 
             String motodriver = Integer.toString(idUser);
-
             MyOrdersFragment fragment = MyOrdersFragment.newInstance(title, motodriver);
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager
                     .beginTransaction()
                     .replace(R.id.frame, fragment)
-                    .addToBackStack("myorders")
+                    .addToBackStack(Constants.MYORDERSFRAGMENT)
                     .commit();
             ((MainActivity) getActivity()).setTitle(title);
 
@@ -158,26 +154,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Retr
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     public void getNumOrders() {
 
+        //region Create and Show progress dialog
         progress = new ProgressDialog(getContext());
         progress.show();
         progress.setContentView(R.layout.custom);
         progress.setCanceledOnTouchOutside(false);
-
 
         TextView text = (TextView) progress.findViewById(R.id.text);
         ImageView image = (ImageView) progress.findViewById(R.id.zasSpin);
 
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.zas_spin);
         image.startAnimation(animation);
+        //endregion
 
-        /*progress = ProgressDialog.show(getContext(), null, "Cargando", false, false);
-        progress.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));*/
-
+        //region Call getOrdersCountByAreaDelivery and getOrdersCountByUserAreaDelivery
         Retrofit retrofit;
         Globals g = Globals.getInstance();
 
@@ -207,6 +201,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Retr
         //restHelper.getOrdersCountByIdUser(this);
         restHelper.getOrdersCountByUserAreaDelivery(this);
 
+        //endregion
+
         numOfOrdersAcceptedByDriver();
     }
 
@@ -226,7 +222,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Retr
         }
         //restHelper.getOrdersByUser(this);
         restHelper.getOrdersByUserAndArea(this);
-
 
     }
 

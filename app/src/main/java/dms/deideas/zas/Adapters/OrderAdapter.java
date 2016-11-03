@@ -33,7 +33,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     private Comparator<Order> comparator;
 
-
     public OrderAdapter(OrderListener listener) {
         this.orders = new ArrayList<>();
         this.listener = listener;
@@ -43,14 +42,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         this.listener = listener;
         this.timeMax = timeMax;
     }
-
-
     public OrderAdapter(List<Order> orders, OrderListener listener, Integer countOrders) {
         this.orders = orders;
         this.listener = listener;
         this.countOrders = countOrders;
     }
-
 
     @Override
     public OrderAdapter.OrderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -75,6 +71,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         } else {
             holder.imgbigorder.setVisibility(View.INVISIBLE);
         }
+
+        //region The state of payment change depending of payment details of order.
         if(!strOrderStatus.equals(Constants.ORDER_STATUS_rest_has_accepted) && !strOrderStatus.equals(Constants.ORDER_STATUS_problem)){
             if (orders.get(position).getPayment_details().getMethod_title().contentEquals(String.valueOf(R.string.paid_home)) && orders.get(position).getPayment_details().getPaid() == false) {
                 holder.state_of_payment.setText(String.valueOf((orders.get(position).getTotal()) + " " + R.string.euro_Symbol));
@@ -85,6 +83,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 holder.state_of_payment.setVisibility(View.VISIBLE);
             }
         }
+        //endregion
+
+        //region The color of RelativeLayout Background change depending of status of order , the type of problem (if Orderstatus = problem), the time of kitchen or the priority of restaurant.
         switch (strOrderStatus)
         {
             case Constants.ORDER_STATUS_problem:
@@ -158,9 +159,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 break;
 
         }
+        //endregion
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -219,7 +219,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     }
 
     public interface OrderListener {
-
         void onOrderClicked(View card, Order order);
     }
 
@@ -252,7 +251,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         return ret_status;
 
     }
-
 
     public void setComparador(Comparator<Order> comparator) {
         this.comparator = comparator;

@@ -13,6 +13,7 @@ public class CustomerShippingAddress {
     private String state;
     private String postcode;
     private String country;
+    private String data_map;
 
 
     public CustomerShippingAddress() {
@@ -83,4 +84,11 @@ public class CustomerShippingAddress {
     }
 
 
+    public String getData_map() {
+        return data_map;
+    }
+
+    public void setData_map(String data_map) {
+        this.data_map = data_map;
+    }
 }

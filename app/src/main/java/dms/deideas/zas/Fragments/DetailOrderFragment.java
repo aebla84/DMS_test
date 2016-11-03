@@ -59,8 +59,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by dmadmin on 14/06/2016.
  */
-public class DetailOrderFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback,RetrofitDelegateHelper.AlRecibirListaDelegate, RetrofitDelegateHelper.AlRecibirListaCommentsDelegate {
+public class DetailOrderFragment extends Fragment implements View.OnClickListener,RetrofitDelegateHelper.AlRecibirListaDelegate, RetrofitDelegateHelper.AlRecibirListaCommentsDelegate {
 
+    //region Declare variables
     private Order order;
     private Integer idUser;
 
@@ -94,7 +95,6 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
     private TextView txtIncidenceRed;
     private TextView txtIncidenceWhite;
 
-
     private ImageView icFinishedWhite;
     private ImageView icFinishedRed;
     private TextView txtFinishedWhite;
@@ -105,15 +105,12 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
     private ImageView icFinishedIncidenceWhite;
     private TextView txtFinishedIncidenceWhite;
 
-    private int MAP_CONTROL = 0;
-
+    private int MAP_CONTROL = Constants.MAP_CONTROL_Restaurant;
     private List<String> notes;
-
     private Globals g = Globals.getInstance();
 
     private RetrofitDelegateHelper restHelperOrders;
     private RetrofitDelegateHelper restHelper;
-
 
     private int numOfOrdersAccepted = 0;
     private int numOfOrdersAcceptedByDriver = 0;
@@ -122,17 +119,15 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
     private Boolean isOrderChanged;
     private SharedPreferences prefs;
     private String originPage;
-    public DetailOrderFragment() {
+    //endregion
 
+    public DetailOrderFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
         View view = inflater.inflate(R.layout.detail_order_fragment, container, false);
-
         Globals g = Globals.getInstance();
         g.setIdFragment(Constants.ORDERSFRAGMENT_CODE);
         g.setIdFragmentDetail(Constants.DETAILORDERSFRAGMENT_CODE);
@@ -146,10 +141,10 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
         setVisibility();
 
         if(isOrderChanged) {
-            getNewOrder();
+            getNewOrder(); //Call BBDD and reload fields
         }
         else{
-            setValues();
+            setValues();//Load fields
         }
 
         return view;
@@ -176,7 +171,6 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
         dtorder_problems = (RelativeLayout)view.findViewById(R.id.relLay_dtorder_problems);
         commentsCount = (TextView) view.findViewById(R.id.commentsCount);
         problemsCount = (TextView) view.findViewById(R.id.problemsCount);
-
 
         icMotoPink = (ImageView) view.findViewById(R.id.icMotoPink);
         txtMotoPink = (TextView) view.findViewById(R.id.txtMotoPink);
@@ -207,17 +201,19 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
         progress = new ProgressDialog(getContext(),R.style.CustomDialog);
     }
 
-    private void readPreferences(){
+    private void readPreferences() {
         final SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         idUser = prefs.getInt(Constants.PREFERENCES_USER_ID, 0);
-        numOfOrdersAccepted = prefs.getInt("numMyOrders", 0);
-        numOfOrdersAcceptedByDriver = prefs.getInt("numMyOrdersWithouProblems", 0);
-        if(prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, "0") != null)
+        numOfOrdersAccepted = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS_ACCEPTED, 0);
+        numOfOrdersAcceptedByDriver = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS_ACCEPTEDBYDRIVER, 0);
+        if (prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, "0") != null)
             numMaxOrdersAccepted_BBDD = Integer.valueOf(prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, "0"));
-        else {numMaxOrdersAccepted_BBDD = 0;}
+        else {
+            numMaxOrdersAccepted_BBDD = 0;
+        }
         isOrderChanged = prefs.getBoolean(Constants.PREFERENCES_IS_ORDER_CHANGED, false);
-
     }
+
     private void getNewOrder()
     {
         Globals g = Globals.getInstance();
@@ -244,15 +240,9 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
         hour_order.setText(order.getCreated_at().substring(11, 16));
         //hour_order_rest_accepted.setText(order.getTime_rest_accepted().substring(11, 16));
         customer_direction.setText(order.getShipping_address().getAddress_1());
-        /*if (order.getPayment_details().getMethod_title().contentEquals("Pagar en domicilio") && order.getPayment_details().getPaid() == false) {
-            state_of_payment.setText("Pago en EFECTIVO ");
-        } else {
-            state_of_payment.setText("Pago ONLINE REALIZADO ");
-        }*/
         if(order.getLista_incidencias() != null)
             problemsCount.setText(String.valueOf(order.getLista_incidencias().size()));
     }
-
 
     private void setOnClickListener() {
         restaurant_direction.setOnClickListener(this);
@@ -265,19 +255,16 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
         incidents.setOnClickListener(this);
     }
 
-
-
     private void setVisibility() {
         state_of_payment.setVisibility(View.GONE);
         relLay_detorder_statuspayment.setVisibility(View.GONE);
         String status = order.getOrderstatus();
+        //The number maximum of orders accepted by driver have decided in WEB.
+        //Here compare between this settings of app and real number of orders accepted actual by driver inside app.
         if(numOfOrdersAcceptedByDriver < numMaxOrdersAccepted_BBDD || status.equals(Constants.ORDER_STATUS_problem) )
         {
-
             switch (status) {
                 case Constants.ORDER_STATUS_rest_has_accepted:
-                    cancel.setVisibility(View.VISIBLE);
-                    break;
                 case Constants.ORDER_STATUS_problem:
                     cancel.setVisibility(View.VISIBLE);
                     break;
@@ -289,10 +276,9 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
         {
             accept.setVisibility(View.INVISIBLE);
         }
-
         order_status_visibility();
-
     }
+
     private void order_status_visibility() {
 
         String status = order.getOrderstatus();
@@ -344,7 +330,6 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
         }
     }
 
-
     public static DetailOrderFragment newInstance(String title, Order order,String originPage) {
         Globals g = Globals.getInstance();
         g.setScreenCode(Constants.screenCode_detailOrders);
@@ -378,7 +363,6 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
             g.setServiceCode(Constants.SERVICE_CODE_order_get);
 
         } else if (v == cancel) {
-
             String title = getResources().getString(R.string.orders_sb_title);
             OrdersFragment fragment = OrdersFragment.newInstance(title);
             loadNextFragment(fragment,title);
@@ -396,44 +380,8 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-
-        double latitude=0.0, longitude = 0.0;
-
-        String title = null;
-
-        // Restaurant Map called
-        if (MAP_CONTROL == 0) {
-
-            latitude = Double.parseDouble(order.getRestaurant().getData_map().getLat());
-            longitude = Double.parseDouble(order.getRestaurant().getData_map().getLng());
-
-            title = order.getRestaurant().getName();
-        }
-        // Customer Map called
-        else if (MAP_CONTROL == 1) {
-            latitude = 41.383150;
-            longitude = 2.134603;
-            title = order.getShipping_address().getFirst_name() + " " + order.getShipping_address().getLast_name();
-        }
-
-        LatLng cali = new LatLng(latitude, longitude);
-        Marker marker = googleMap.addMarker(new MarkerOptions()
-                .position(cali)
-                .title(title));
-        marker.showInfoWindow();
-
-        CameraPosition cameraPosition = CameraPosition.builder()
-                .target(cali)
-                .zoom(15)
-                .build();
-
-        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-    }
-
     private void setComments(View v) {
+        //region Create and Show progress dialog
         progress = new ProgressDialog(getContext());
         progress.show();
         progress.setContentView(R.layout.custom);
@@ -444,9 +392,11 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
 
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.zas_spin);
         image.startAnimation(animation);
+        //endregion
 
         int idOrder = order.getId();
 
+        //region Get Order notes by id Order
         Globals g = Globals.getInstance();
         g.setServiceCode(Constants.SERVICE_CODE_order_notes);
         try {
@@ -459,6 +409,7 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
             e.printStackTrace();
         }
         restHelper.getOrderNotesByIdOrder(this);
+        //endregion
     }
 
     public void loadNextFragment(Fragment fragment, String title){
@@ -485,23 +436,24 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
         try {
             if (body != null) {
                 OrderNote clientNote =  setClientNote();
-                if(order.getNote() != "" && clientNote != null) {
+                if(order.getNote() != "" && clientNote != null) {//If order have note and clientNote is different of null
+                    // If list of comments have elements and the first of list is not 0 (its means that is clientnote add in list) OR list of comments NO have elements
                     clientNote.setId("0");
                     lstcomments.add(clientNote);
                 }
 
-                if (body.getOrder_notes().isEmpty() && clientNote == null) {
-                    comCount = 0;
+                if (body.getOrder_notes().isEmpty() && clientNote == null) {//if list of orders is empty and clientNote is null
+                    comCount = 0;//Count of comments is 0.
                 } else {
-                    lstcomments.addAll(body.getOrder_notes());
-                    order.setLista_comments(lstcomments);
-                    comCount = order.getLista_comments().size();
+                    lstcomments.addAll(body.getOrder_notes());// All all list of comments BBDD in object list of comments.
+                    order.setLista_comments(lstcomments);//Set this list in order object.
+                    comCount = order.getLista_comments().size();// Count of comments is the size of list of comments
                 }
                 commentsCount.setText(String.valueOf(comCount));
             }
         } catch (Exception ex) {
         }
-        progress.dismiss();
+        if(progress!= null)  progress.dismiss(); // Close progress dialog
     }
 
     @Override
@@ -515,19 +467,13 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
     }
 
     @Override
-    public void arrayRecibido(ArrayList<String> body) {
-
-    }
+    public void arrayRecibido(ArrayList<String> body) {}
 
     @Override
-    public void areaDeliveryRecived(ArrayList<Reparto> body) {
-
-    }
+    public void areaDeliveryRecived(ArrayList<Reparto> body) {}
 
     @Override
-    public void stringReceived(String namefunction, String body) {
-
-    }
+    public void stringReceived(String namefunction, String body) {}
 
     @Override
     public void orderReceived(OrderUpdate orderNew) {
@@ -539,27 +485,26 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
             editor.putBoolean(Constants.PREFERENCES_IS_ORDER_CHANGED,false);
             editor.commit();
 
+            //region Create and Show progress dialog
             progress = new ProgressDialog(getContext());
             progress.show();
             progress.setContentView(R.layout.custom);
             progress.setCanceledOnTouchOutside(false);
-
 
             TextView text = (TextView) progress.findViewById(R.id.text);
             ImageView image = (ImageView) progress.findViewById(R.id.zasSpin);
 
             Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.zas_spin);
             image.startAnimation(animation);
+            //endregion
 
             setValues();
-            progress.dismiss();
+            progress.dismiss(); //Close progress dialog
         }
     }
 
     @Override
-    public void notMaxTime() {
-
-    }
+    public void notMaxTime() {}
 
     public OrderNote setClientNote()
     {
@@ -572,8 +517,12 @@ public class DetailOrderFragment extends Fragment implements View.OnClickListene
             {
                 notetext = notetext.replace("[:es]","").replace("[:]","");
             }
-            clientNote.setNote(notetext);
-            clientNote.setCreatedAt(order.getCreated_at());
+            if(!notetext.equals(""))
+            {
+                clientNote.setNote(notetext);
+                clientNote.setCreatedAt(order.getCreated_at());
+            }
+            else clientNote = null;
         }
         return  clientNote;
     }
