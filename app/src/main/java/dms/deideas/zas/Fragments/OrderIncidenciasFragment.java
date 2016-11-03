@@ -173,7 +173,11 @@ public class OrderIncidenciasFragment extends Fragment implements RetrofitDelega
                     Incidencia incidenciaObj = new Incidencia();
                     //incidenciaObj.setPosition("0");
                     List<String> lstnew = new ArrayList<String>();
-                    lstnew.add(et_addcomment.getText().toString());
+                    if(et_addcomment.getText().toString().equals("")){
+                        lstnew.add(" ");
+                    } else {
+                        lstnew.add(et_addcomment.getText().toString());
+                    }
                     incidenciaObj.setLstdescription(lstnew);
                     incidenciaObj.setTypeofincidencia(convertTypeOfProblem(strTypeOfProblem));
                     addIncidencia(incidenciaObj);
