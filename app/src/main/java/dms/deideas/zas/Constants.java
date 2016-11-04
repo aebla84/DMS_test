@@ -39,6 +39,7 @@ public class Constants {
     public static final int SERVICE_CODE_order_count_byuser_byareadelivery = 22;
     public static final int SERVICE_CODE_order_byidorder = 23;
     public static final int SERVICE_CODE_max_time_orderchangecolor_inMyorders = 24;
+    public static final int SERVICE_CODE_order_saveLocation = 25;
 
     public static final int PROBLEM_drop_food = 0;
     public static final int PROBLEM_wrong_plate = 1;

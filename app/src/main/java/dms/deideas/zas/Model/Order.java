@@ -53,7 +53,8 @@ public class Order implements Serializable {
     private int minutesDriverOnRoad;
     @SerializedName("restaurant_foodpriority")
     private String restaurant_foodpriority;
-
+    @SerializedName("shipping_latlong")
+    private String shipping_latlong;
 
     public Order() {
     }
@@ -229,4 +230,11 @@ public class Order implements Serializable {
         this.restaurant_foodpriority = restaurant_foodpriority;
     }
 
+    public String getShipping_latlong() {
+        return shipping_latlong;
+    }
+
+    public void setShipping_latlong(String shipping_latlong) {
+        this.shipping_latlong = shipping_latlong;
+    }
 }

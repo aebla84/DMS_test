@@ -1,8 +1,10 @@
 package dms.deideas.zas.Services.Retrofit;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -20,6 +22,7 @@ import dms.deideas.zas.Model.Incidencia;
 import dms.deideas.zas.Model.Order;
 import dms.deideas.zas.Model.OrderNote;
 import dms.deideas.zas.Model.Reparto;
+import dms.deideas.zas.R;
 import dms.deideas.zas.Services.AreaDeliveryService;
 import dms.deideas.zas.Services.OrderCount;
 import dms.deideas.zas.Services.OrderNoteGet;
@@ -350,6 +353,12 @@ public class RetrofitDelegateHelper {
             BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_driver_max_time";
             baseString = "GET&" + BASE_URL_CODIFIED;
         }
+        else if (serviceCode == Constants.SERVICE_CODE_order_saveLocation) {
+            Log.d("Service Code", "25, haciendo POST");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fsave_shipping_latlong%2F" + idOrder;
+            baseString = "POST&" + BASE_URL_CODIFIED;
+        }
+
         //endregion
 
         baseString = baseString + "&oauth_consumer_key%3D" + oauth_consumer_key
@@ -1096,6 +1105,37 @@ public class RetrofitDelegateHelper {
             }
         });
     }
+
+    //Update post meta Shipping_latlong - Add latitud and longitude from app by motodriver (Button Save location)
+    public void saveLocation(final response bResult ,String locationClient) {
+
+        //region Iniatiate order +  set orderUpdate
+        Order order = new Order();
+        order.setShipping_latlong(locationClient);
+        final OrderUpdate orderUpdate = new OrderUpdate();
+        orderUpdate.setOrder(order);
+        //endregion
+
+        orderService.saveLocation(idOrder, orderUpdate, oauth_consumer_key, oauth_nonce, oauth_signature,
+                oauth_signature_method, oauth_timestamp).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                //If is correct the update of order
+                if (response.isSuccessful()) {
+                    Log.d("URL accept: ", response.raw().request().url().toString());
+                    Log.d("CODE_POST: ", String.valueOf(response.code()));
+                    bResult.hascreatecomment(true);
+                } else {
+                    Log.d("error: ", String.valueOf(response.errorBody()));
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d("Error", "No respuesta");
+            }
+        });
+    }
+
     //endregion
 
     //Method that provide us the next status of order depending by status actual

@@ -191,4 +191,15 @@ public interface OrderService {
     // ServiceCode = 24
     @GET("wp-json/wp/v2/get_driver_max_time")
     Call<String> get_maxtime_inlist();
+
+
+    // ServiceCode = 25;
+    @POST("wc-api/v2/orders/save_shipping_latlong/{id}")
+    Call<ResponseBody> saveLocation(@Path("id") int idOrder,
+                                    @Body() OrderUpdate order,
+                                    @Query("oauth_consumer_key") String oauth_consumer_key,
+                                    @Query("oauth_nonce") String oauth_nonce,
+                                    @Query("oauth_signature") String oauth_signature,
+                                    @Query("oauth_signature_method") String oauth_signature_method,
+                                    @Query("oauth_timestamp") String oauth_timestamp);
 }

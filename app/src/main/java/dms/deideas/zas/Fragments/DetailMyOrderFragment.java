@@ -688,6 +688,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
 
         //Create comment in order with location information of motodriver
         addcomment_location(this.latitudeClient,this.longitudeClient);
+
     }
     //endregion
 
@@ -805,14 +806,13 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
     }
 
     public void addcomment_location(double dlat, double dlong){
-        OrderNote orderNote = new OrderNote();
-        orderNote.setNote(getContext().getResources().getString(R.string.comment_location) +" Latitud "+ String.valueOf(dlat) +" y Longitud " + String.valueOf(dlong) + ".");
+        String strLocation = dlat+","+dlong;
 
         //region Indicates the service call addOrderNote
         Globals g = Globals.getInstance();
         try {
-            g.setServiceCode(Constants.SERVICE_CODE_notes_byuser);
-            restHelper = new RetrofitDelegateHelper(order.getId(), 0, null, orderNote);
+            g.setServiceCode(Constants.SERVICE_CODE_order_saveLocation);
+            restHelper = new RetrofitDelegateHelper(order.getId(), 0);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
@@ -820,7 +820,8 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
-        restHelper.addOrderNote(this);
+        //restHelper.addOrderNote(this);
+        restHelper.saveLocation(this,strLocation);
         //endregion
     }
 
@@ -828,7 +829,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
     public void hascreatecomment(Boolean bResult) {
         if(bResult)
         {
-            Toast.makeText(getContext(),getContext().getResources().getString(R.string.toast_location), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),getContext().getResources().getString(R.string.toast_location), Toast.LENGTH_LONG).show();
             setComments(getView());
         }
     }
