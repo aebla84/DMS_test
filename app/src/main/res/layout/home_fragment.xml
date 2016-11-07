@@ -17,7 +17,7 @@
         android:background="@null"
         android:src="@drawable/ic_home_orders"
         android:layout_gravity="center"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="30dp"
 
         android:contentDescription="@android:string/ok"
         android:cropToPadding="true" />
@@ -43,8 +43,9 @@
         android:background="@null"
         android:src="@drawable/ic_home_own_orders"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:contentDescription="@android:string/ok" />
+
     <TextView
         style="@style/titleAvenirFont"
         android:layout_width="wrap_content"
