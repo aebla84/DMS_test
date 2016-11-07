@@ -18,5 +18,4 @@
 /vendor/
 /bin/
 /composer.phar
-/app/src/main/res
 /.idea/gradle.xml
