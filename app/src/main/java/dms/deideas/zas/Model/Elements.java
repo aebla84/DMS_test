@@ -1,9 +1,11 @@
 package dms.deideas.zas.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by dmadmin on 21/07/2016.
  */
-public class Elements {
+public class Elements implements Serializable {
 
     private Distance distance;
     private Duration duration;

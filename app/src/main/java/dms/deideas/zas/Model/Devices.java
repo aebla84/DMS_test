@@ -1,9 +1,11 @@
 package dms.deideas.zas.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by bnavarro on 02/08/2016.
  */
-public class Devices {
+public class Devices implements Serializable {
 
     //private String id;
     private String registration_id;

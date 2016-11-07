@@ -2,10 +2,12 @@ package dms.deideas.zas.Model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by dmadmin on 02/06/2016.
  */
-public class Restaurant {
+public class Restaurant implements Serializable {
 
     private String name;
     private String street;

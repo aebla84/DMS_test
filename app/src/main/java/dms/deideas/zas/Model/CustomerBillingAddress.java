@@ -1,9 +1,11 @@
 package dms.deideas.zas.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by bnavarro on 31/08/2016.
  */
-public class CustomerBillingAddress {
+public class CustomerBillingAddress implements Serializable{
     private String first_name;
     private String last_name;
     private String address_1;

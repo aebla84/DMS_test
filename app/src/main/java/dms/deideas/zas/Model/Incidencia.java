@@ -1,11 +1,12 @@
 package dms.deideas.zas.Model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by bnavarro on 18/07/2016.
  */
-public class Incidencia {
+public class Incidencia implements Serializable {
     private String problem_type;
     private List<String> problems;
 

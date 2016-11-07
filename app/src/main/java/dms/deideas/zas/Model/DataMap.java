@@ -1,9 +1,11 @@
 package dms.deideas.zas.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by dmadmin on 22/06/2016.
  */
-public class DataMap {
+public class DataMap implements Serializable {
 
 
     public DataMap() {

@@ -1,9 +1,11 @@
 package dms.deideas.zas.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by dmadmin on 21/07/2016.
  */
-public class Reparto {
+public class Reparto implements Serializable {
 
     private String id;
     private String areadelivery;
