@@ -107,6 +107,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                             break;
                         default:
                             holder.block1.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.white));
+                            holder.txtOrder.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.colorAccent));
+                            holder.idorder.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.colorAccent));
                             break;
                     }
                 }
