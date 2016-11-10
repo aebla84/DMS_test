@@ -16,6 +16,8 @@ public class CustomerShippingAddress implements Serializable {
     private String postcode;
     private String country;
     private String data_map;
+    private String indications;
+    private String is_wrong_location;
 
 
     public CustomerShippingAddress() {
@@ -92,5 +94,21 @@ public class CustomerShippingAddress implements Serializable {
 
     public void setData_map(String data_map) {
         this.data_map = data_map;
+    }
+
+    public String getIndications() {
+        return indications;
+    }
+
+    public void setIndications(String indications) {
+        this.indications = indications;
+    }
+
+    public String getIs_wrong_location() {
+        return is_wrong_location;
+    }
+
+    public void setIs_wrong_location(String is_wrong_location) {
+        this.is_wrong_location = is_wrong_location;
     }
 }

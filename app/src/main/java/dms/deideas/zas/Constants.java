@@ -11,6 +11,8 @@ public class Constants {
 
     public static final String URL_ZAS = "http://zascomidaentuboca.es/";
     public static final String URL_ZAS_retrofit = "http%3A%2F%2Fzascomidaentuboca.es%2F";
+    public static final String URL_MAP_distancematrix = "https://maps.googleapis.com/maps/api/distancematrix/";
+    public static final String API_KEY_GOOGLE_MAP =  "AIzaSyDFRTSsn-fabk8bfY3hV6bH_GHoPRUOMNQ";
 
     public static final String RETROFIT_ONFAILURE_NOT_REPLY = "No respuesta";
 

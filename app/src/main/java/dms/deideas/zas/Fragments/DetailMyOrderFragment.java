@@ -160,7 +160,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
         //hour_order_rest_accepted.setText(order.getTime_rest_accepted().substring(11, 16) + "h");
         time_left_of_order.setText(order.getTimeKitchen() + " min");
         //hour_order_title.setText(order.getCreated_at().substring(11, 16) + "h");
-        customer_direction.setText(order.getShipping_address().getAddress_1() + " " + order.getShipping_address().getAddress_2());
+        customer_direction.setText(order.getShipping_address().getAddress_1() + " " + order.getShipping_address().getAddress_2() + " (" + order.getShipping_address().getIndications() +") ");
         if (order.getPayment_details().getMethod_title().contentEquals(getContext().getResources().getString(R.string.paid_home)) && order.getPayment_details().getPaid() == false) {
             state_of_payment.setText(R.string.cash_payment);
         } else {

@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -332,29 +333,29 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
 
     private void getpositionUser() {
 
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        // Define the criteria how to select the locatioin provider -> use
-        // default
-        Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, false);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-        }
-        Location location = locationManager.getLastKnownLocation(provider);
-
-        // Initialize the location fields
-        if (location != null) {
+        Location location = null;
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED  && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            provider = locationManager.getBestProvider(criteria, false);
+            location = locationManager.getLastKnownLocation(provider);
             onLocationChanged(location);
         } else {
-            //Toast.makeText(getContext(), "Location not available", Toast.LENGTH_SHORT).show();
+            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        this.latitudeUser = (double) (location.getLatitude());
-        this.longitudeuser = (double) (location.getLongitude());
+        if(location != null) {
+            this.latitudeUser = (double) (location.getLatitude());
+            this.longitudeuser = (double) (location.getLongitude());
+        }
+        else
+        {
+            Toast.makeText(getContext(),R.string.toast_without_address_correctly, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -372,16 +373,37 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        Location location = null;
+        if (permissions.length == 2 &&
+                permissions[0] == android.Manifest.permission.ACCESS_FINE_LOCATION &&  permissions[1] == Manifest.permission.ACCESS_COARSE_LOCATION &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                Criteria criteria = new Criteria();
+                provider = locationManager.getBestProvider(criteria, false);
+                 location = locationManager.getLastKnownLocation(provider);
+                onLocationChanged(location);
+                return;
+            }
+        } else {
+            Toast.makeText(getContext(), R.string.toast_without_address_correctly, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
     private void calculateDistance(String lstDestination, final OrderSearch osBody) {
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("https://maps.googleapis.com/maps/api/distancematrix/")
+                .baseUrl(Constants.URL_MAP_distancematrix)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
 
         distanceService = retrofit.create(DistanceService.class);
-        distanceService.getdistance(latitudeUser + "," + longitudeuser, lstDestination, "AIzaSyDFRTSsn-fabk8bfY3hV6bH_GHoPRUOMNQ").enqueue(new Callback<DistanceSearch>() {
+        distanceService.getdistance(latitudeUser + "," + longitudeuser, lstDestination, Constants.API_KEY_GOOGLE_MAP).enqueue(new Callback<DistanceSearch>() {
             @Override
             public void onResponse(Call<DistanceSearch> call, Response<DistanceSearch> response) {
                 if (response.isSuccessful()) {
