@@ -610,6 +610,14 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/ic_phone_white_24dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:visibility="invisible"
+                    tool:srcCompat="@android:drawable/ic_delete"
+                    android:id="@+id/imgLocationFail" />
             </RelativeLayout>
 
             <RelativeLayout

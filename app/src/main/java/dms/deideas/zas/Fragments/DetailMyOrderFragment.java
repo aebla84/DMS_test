@@ -71,7 +71,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
     private Integer idUser;
 
     private TextView id_order, restaurant_name, time_left_of_order, restaurant_direction, tv_phone_restaurant, customer_name, hour_order, payment_total, commentsCount, problemsCount, customer_direction;
-    private ImageView phone_restaurant, phone_customer, imgpointClock;
+    private ImageView phone_restaurant, phone_customer, imgpointClock, imgLocationFail;
     private TextView tv_phone_customer, state_of_payment, comments, incidents;
     private Button accept, disallocate, saveLocation, savePhone, btnincidencia;
     private RelativeLayout dtorder_problems;
@@ -186,6 +186,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
         restaurant_direction = (TextView) view.findViewById(R.id.restaurant_direction);
         phone_restaurant = (ImageView) view.findViewById(R.id.imgPhoneRestaurant);
         imgpointClock = (ImageView) view.findViewById(R.id.imgpointClock);
+        imgLocationFail = (ImageView) view.findViewById(R.id.imgLocationFail);
         tv_phone_restaurant = (TextView) view.findViewById(R.id.phoneRest);
         customer_name = (TextView) view.findViewById(R.id.customer_name);
         hour_order = (TextView) view.findViewById(R.id.hour_order);
@@ -291,6 +292,12 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
             dtorder_problems.setVisibility(View.GONE);
         }
         order_status_visibility_and_settext();
+
+        if(order.getShipping_address().getIs_wrong_location() == "1"){
+            imgLocationFail.setVisibility(View.VISIBLE);
+        } else {
+            imgLocationFail.setVisibility(View.INVISIBLE);
+        }
     }
 
     //Set text for button to change status and set the question that ask you the dialog
@@ -677,7 +684,9 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
         // Initialize the location fields
         if (!getLastLocation.equals(null)) {
             onLocationChanged(getLastLocation);
+            order.getShipping_address().setIs_wrong_location("0");
         } else {
+            order.getShipping_address().setIs_wrong_location("1");
             Toast.makeText(getContext(), R.string.toast_without_address_correctly, Toast.LENGTH_SHORT).show();
         }
     }
