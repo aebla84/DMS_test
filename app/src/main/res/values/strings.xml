@@ -15,6 +15,7 @@
     <!-- Strings Name Function -->
     <string name="get_max_accepted">get_maxnumber_orders_accepted</string>
     <string name="get_max_visible">get_maxnumber_orders_visible</string>
+    <string name="get_maxtime_order_changed_maxpriority">get_maxtime</string>
 
     <!-- MainActivity -->
     <string name="go_fragment_home">home</string>

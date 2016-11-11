@@ -26,7 +26,7 @@ import dms.deideas.zas.Services.Retrofit.RetrofitDelegateHelper;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Splashscreen extends AppCompatActivity implements RetrofitDelegateHelper.AlRecibirListaDelegate {
+public class Splashscreen extends AppCompatActivity {
 
 
     Handler handler = new Handler();
@@ -38,9 +38,6 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
     private long timeNow = 0;
 
     private RetrofitDelegateHelper restHelper;
-    private String numberMaxOrders = "";
-    private String numberMaxOrdersVisible = "";
-    private String timeMax = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +62,9 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
             runnable = new Runnable() {
                 @Override
                 public void run() {
-                    getConfigurationByWeb();
+                    Intent intent = new Intent(Splashscreen.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             };
         }
@@ -79,45 +78,17 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
         // in other way, login is mandatory
         else {
             setContentView(R.layout.activity_splashscreen);
-//            handler = new Handler();
             runnable = new Runnable() {
                 @Override
                 public void run() {
-                    getConfigurationByWeb();
+                    Intent intent = new Intent(Splashscreen.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             };
 
         }
 
-    }
-
-    private void getConfigurationByWeb() {
-        Globals g = Globals.getInstance();
-
-        g.setServiceCode(Constants.SERVICE_CODE_number_max_orders_accepted);
-        callRetrofit();
-        restHelper.get_maxnumber_orders_accepted(this);
-
-        g.setServiceCode(Constants.SERVICE_CODE_number_max_orders_visible);
-        callRetrofit();
-        restHelper.get_maxnumber_orders_visible(this);
-
-        g.setServiceCode(Constants.SERVICE_CODE_max_time_orderchangecolor_inMyorders);
-        callRetrofit();
-        restHelper.get_maxtime(this);
-
-    }
-
-    private void callRetrofit() {
-        try {
-            restHelper = new RetrofitDelegateHelper();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -130,76 +101,6 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(runnable);
-    }
-
-    @Override
-    public void listaRecibida(OrderSearch body) {
-
-    }
-
-    @Override
-    public void errorRecibido(Object error) {
-
-    }
-
-    @Override
-    public void closedialog() {
-
-    }
-
-    @Override
-    public void arrayRecibido(ArrayList<String> body) {
-
-    }
-
-    @Override
-    public void areaDeliveryRecived(ArrayList<Reparto> body) {
-
-    }
-
-
-    @Override
-    public void stringReceived(String nameFunction, String body) {
-        SharedPreferences prefs =
-                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
-        //Save data of user in preferences
-        SharedPreferences.Editor editor = prefs.edit();
-        if (nameFunction == "get_maxnumber_orders_accepted") {
-            numberMaxOrders = body;
-            editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, numberMaxOrders);
-            editor.commit();
-        } else if (nameFunction == "get_maxnumber_orders_visible") {
-            numberMaxOrdersVisible = body;
-            editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_VISIBLE, numberMaxOrdersVisible);
-            editor.commit();
-            Intent intent = new Intent(Splashscreen.this, Login.class);
-            startActivity(intent);
-            finish();
-        } else if (nameFunction == "get_maxtime") {
-
-            // Max time to become priority in minutes
-            timeMax = body;
-            editor.putString("timeMax", timeMax);
-            editor.commit();
-        }
-
-    }
-
-    @Override
-    public void orderReceived(OrderUpdate order) {
-
-    }
-
-    // For error 500, not time specified on server set value 120 or other for default
-    @Override
-    public void notMaxTime() {
-        SharedPreferences prefs =
-                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
-        //Save data of user in preferences
-        SharedPreferences.Editor editor = prefs.edit();
-        timeMax = "120";
-        editor.putString("timeMax", timeMax);
-        editor.commit();
     }
 
 

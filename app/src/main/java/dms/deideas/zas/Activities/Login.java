@@ -61,6 +61,7 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
     private Spinner state_area_delivery;
     private Intent intent;
     private RetrofitDelegateHelper restHelper;
+    private String timeMax = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +69,10 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         readPreferences();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
-
         area_deliverySpinners();
-
-        if (IntnumberMaxOrders == 0) getConfigurationByWeb();
-
+        getConfigurationByWeb();
         setViews();
-
         message.setText("");
-
         enterApp.setOnClickListener(this);
     }
 
@@ -275,17 +271,22 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
                 getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         //Save data of user in preferences
         SharedPreferences.Editor editor = prefs.edit();
-        if (nameFunction == getResources().getString(R.string.get_max_accepted)) {
+        if (nameFunction.equals(getResources().getString(R.string.get_max_accepted))) {
             numberMaxOrders = body;
             IntnumberMaxOrders = Integer.getInteger(numberMaxOrders);
             editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, numberMaxOrders);
             editor.commit();
-        } else if (nameFunction == getResources().getString(R.string.get_max_visible)) {
+        } else if (nameFunction.equals(getResources().getString(R.string.get_max_visible))) {
             numberMaxOrdersVisible = body;
             editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_VISIBLE, numberMaxOrdersVisible);
             editor.commit();
         }
-
+        else if (nameFunction.equals(getResources().getString(R.string.get_maxtime_order_changed_maxpriority))) {
+            // Max time to become priority in minutes
+            timeMax = body;
+            editor.putString(Constants.PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY, timeMax);
+            editor.commit();
+        }
     }
 
     @Override
@@ -293,25 +294,22 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
 
     }
 
-    @Override
-    public void notMaxTime() {
-
-    }
 
     private void getConfigurationByWeb() {
         Globals g = Globals.getInstance();
 
         g.setServiceCode(Constants.SERVICE_CODE_number_max_orders_accepted);
-
         callRetrofit();
-
         restHelper.get_maxnumber_orders_accepted(this);
 
         g.setServiceCode(Constants.SERVICE_CODE_number_max_orders_visible);
-
         callRetrofit();
-
         restHelper.get_maxnumber_orders_visible(this);
+
+        g.setServiceCode(Constants.SERVICE_CODE_max_time_orderchangecolor_inMyorders);
+        callRetrofit();
+        restHelper.get_maxtime(this);
+
     }
 
     private void callRetrofit() {
@@ -324,6 +322,18 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
+    }
+
+    // For error 500, not time specified on server set value 120 or other for default
+    @Override
+    public void notMaxTime() {
+        SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        //Save data of user in preferences
+        SharedPreferences.Editor editor = prefs.edit();
+        timeMax = "120";
+        editor.putString("timeMax", timeMax);
+        editor.commit();
     }
 
 }
