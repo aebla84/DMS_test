@@ -247,6 +247,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
         btnincidencia.setOnClickListener(this);
         saveLocation.setOnClickListener(this);
         savePhone.setOnClickListener(this);
+        imgLocationFail.setOnClickListener(this);
     }
 
     // In function of status setting visibility of components (buttons - disallocate, btnincidencia // Price total of payment)
@@ -293,10 +294,9 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
         }
         order_status_visibility_and_settext();
 
-        if(order.getShipping_address().getIs_wrong_location() == "1"){
+        if(order.getShipping_address().getIs_wrong_location().equals("1")){
             imgLocationFail.setVisibility(View.VISIBLE);
-        } else {
-            imgLocationFail.setVisibility(View.INVISIBLE);
+        } else {imgLocationFail.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -546,6 +546,8 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
             ((MainActivity) getActivity()).setTitle(title);
         } else if (v == saveLocation) {
             saveLocation();
+        }  else if (v == imgLocationFail) {
+            Toast.makeText(v.getContext(), R.string.toast_wrong_location, Toast.LENGTH_LONG).show();
         }else if (v==savePhone){
             String newTitle = getResources().getString(R.string.phone);
             String strphone = (tv_phone_customer.getText()!= null)? tv_phone_customer.getText().toString() : "";
@@ -670,7 +672,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
     //region Save location of motodriver like comment.
     //1.Initialize the locationManager and services
     public void saveLocation() {
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+    /*    locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
 
         provider = locationManager.getBestProvider(criteria, false);
@@ -684,30 +686,68 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
         // Initialize the location fields
         if (!getLastLocation.equals(null)) {
             onLocationChanged(getLastLocation);
-            order.getShipping_address().setIs_wrong_location("0");
         } else {
-            order.getShipping_address().setIs_wrong_location("1");
             Toast.makeText(getContext(), R.string.toast_without_address_correctly, Toast.LENGTH_SHORT).show();
+        }*/
+
+
+        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED  && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)  == PackageManager.PERMISSION_GRANTED) {
+            locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            provider = locationManager.getBestProvider(criteria, false);
+            Location location = locationManager.getLastKnownLocation(provider);
+            Location getLastLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            onLocationChanged(getLastLocation);
+        } else {
+            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }
     }
     //2.Initialize the location fields (latitud, longitud) , save in preferences and create comment
     public void onLocationChanged(Location location) {
-        this.latitudeClient = (double) (location.getLatitude());
-        this.longitudeClient = (double) (location.getLongitude());
+        if(location != null) {
+            this.latitudeClient = (double) (location.getLatitude());
+            this.longitudeClient = (double) (location.getLongitude());
 
-        SharedPreferences prefs =
-                getActivity().getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
-        //Save data of client in preferences
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("latitudeClient", String.valueOf(latitudeClient));
-        editor.putString("latitudeClient", String.valueOf(longitudeClient));
+            SharedPreferences prefs =
+                    getActivity().getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+            //Save data of client in preferences
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("latitudeClient", String.valueOf(latitudeClient));
+            editor.putString("latitudeClient", String.valueOf(longitudeClient));
 
-        editor.commit();
+            editor.commit();
 
-        //Create comment in order with location information of motodriver
-        addcomment_location(this.latitudeClient,this.longitudeClient);
+            //Create comment in order with location information of motodriver
+            addcomment_location(this.latitudeClient,this.longitudeClient);
+        }
+        else
+        {
+            Toast.makeText(getContext(),R.string.toast_without_address_correctly, Toast.LENGTH_SHORT).show();
+        }
+
+
 
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        Location location = null;
+        if (permissions.length == 2 &&
+                permissions[0] == android.Manifest.permission.ACCESS_FINE_LOCATION &&  permissions[1] == Manifest.permission.ACCESS_COARSE_LOCATION &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                Criteria criteria = new Criteria();
+                provider = locationManager.getBestProvider(criteria, false);
+                location = locationManager.getLastKnownLocation(provider);
+                onLocationChanged(location);
+                return;
+            }
+        } else {
+            Toast.makeText(getContext(), R.string.toast_without_address_correctly, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     //endregion
 
     @Override

@@ -164,7 +164,7 @@
     <string name="toast_without_address">SIN Dirección</string>
     <string name="toast_without_address_correctly">"No disponemos de la ubicación correcta."</string>
     <string name="toast_No_orders_ended">"No hay pedidos finalizados"</string>
-
+    <string name="toast_wrong_location">"Debe guardar la dirección del cliente cuando llegue a su destino."</string>
     <string name="phone_error">Introduce un teléfono.</string>
     <string name="lblAreaDelivery">Zona de reparto</string>
 
