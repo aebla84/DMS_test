@@ -42,7 +42,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class Login extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener, RetrofitDelegateHelper.AlRecibirListaDelegate, RetrofitDelegateHelper.WebConfigurationDelegate{
+public class Login extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener, RetrofitDelegateHelper.AlRecibirListaDelegate{
     protected ArrayAdapter adapter;
     HashMap<String, Integer> hashMuppets = new HashMap<String, Integer>();
     private EditText user, password;
@@ -71,7 +71,6 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
         area_deliverySpinners();
-        getConfigurationByWeb();
         setViews();
         message.setText("");
         enterApp.setOnClickListener(this);
@@ -265,41 +264,11 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         area_delivery.setOnItemSelectedListener(this);
     }
 
-
     @Override
-    public void stringReceived(String nameFunction, String body) {
-/*        SharedPreferences prefs =
-                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
-        //Save data of user in preferences
-        SharedPreferences.Editor editor = prefs.edit();
-        if (nameFunction.equals(getResources().getString(R.string.get_max_accepted))) {
-            numberMaxOrders = body;
-            IntnumberMaxOrders = Integer.getInteger(numberMaxOrders);
-            editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, numberMaxOrders);
-            editor.commit();
-        } else if (nameFunction.equals(getResources().getString(R.string.get_max_visible))) {
-            numberMaxOrdersVisible = body;
-            editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_VISIBLE, numberMaxOrdersVisible);
-            editor.commit();
-        }
-        else if (nameFunction.equals(getResources().getString(R.string.get_maxtime_order_changed_maxpriority))) {
-            // Max time to become priority in minutes
-            timeMax = body;
-            editor.putString(Constants.PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY, timeMax);
-            editor.commit();
-        }*/
+    public void stringReceived(String namefunction, String body) {
+
     }
 
-    @Override
-    public void webConfigRecibido(WebConfigurator body) {
-        String array[] = new String[0];
-        for (int i = 0; i < 3; i++) {
-            array[0] = body.getMaxOrdersAccepted();
-            array[1] = body.getMaxOrdersVisible();
-            array[2] = body.getMaxTime();
-        }
-        System.out.println(array);
-    }
 
     @Override
     public void orderReceived(OrderUpdate order) {
@@ -307,22 +276,7 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
     }
 
 
-    private void getConfigurationByWeb() {
-        Globals g = Globals.getInstance();
 
-        g.setServiceCode(Constants.SERVICE_CODE_number_max_orders_accepted);
-        callRetrofit();
-        restHelper.get_maxnumber_orders_accepted(this);
-
-        g.setServiceCode(Constants.SERVICE_CODE_number_max_orders_visible);
-        callRetrofit();
-        restHelper.get_maxnumber_orders_visible(this);
-
-        g.setServiceCode(Constants.SERVICE_CODE_max_time_orderchangecolor_inMyorders);
-        callRetrofit();
-        restHelper.get_maxtime(this);
-
-    }
 
     private void callRetrofit() {
         try {

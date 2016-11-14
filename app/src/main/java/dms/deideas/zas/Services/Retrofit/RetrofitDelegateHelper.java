@@ -81,9 +81,9 @@ public class RetrofitDelegateHelper {
 
         //Add Timeout in reply Retrofit's
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
 
         //Build Retrofit
@@ -365,6 +365,11 @@ public class RetrofitDelegateHelper {
             Log.d("Service Code", "25, haciendo POST");
             BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fsave_shipping_latlong%2F" + idOrder;
             baseString = "POST&" + BASE_URL_CODIFIED;
+        }
+        else if (serviceCode == Constants.SERVICE_CODE_configuratorweb) {
+            Log.d("Service Code", "26, haciendo get");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%get_webconfigurator_byapp";
+            baseString = "GET&" + BASE_URL_CODIFIED;
         }
 
         //endregion
