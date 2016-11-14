@@ -22,8 +22,10 @@ import dms.deideas.zas.Model.Incidencia;
 import dms.deideas.zas.Model.Order;
 import dms.deideas.zas.Model.OrderNote;
 import dms.deideas.zas.Model.Reparto;
+import dms.deideas.zas.Model.WebConfigurator;
 import dms.deideas.zas.R;
 import dms.deideas.zas.Services.AreaDeliveryService;
+import dms.deideas.zas.Services.GetConfigurationWeb;
 import dms.deideas.zas.Services.OrderCount;
 import dms.deideas.zas.Services.OrderNoteGet;
 import dms.deideas.zas.Services.OrderNoteService;
@@ -50,6 +52,7 @@ public class RetrofitDelegateHelper {
     public static String BASE_URL_CODIFIED = "";
     private final Retrofit retrofit;
     private final OrderService orderService;
+    private final GetConfigurationWeb getConfigurationWeb;
     private final OrderNoteService ordernoteService;
     private final AreaDeliveryService areaDeliveryService;
     private final int intResult = 0;
@@ -92,6 +95,7 @@ public class RetrofitDelegateHelper {
 
         //Create instance Retrofit
         orderService = retrofit.create(OrderService.class);
+        getConfigurationWeb = retrofit.create(GetConfigurationWeb.class);
         ordernoteService = retrofit.create(OrderNoteService.class);
         areaDeliveryService = retrofit.create(AreaDeliveryService.class);
 
@@ -119,6 +123,7 @@ public class RetrofitDelegateHelper {
                 .build();
 
         orderService = retrofit.create(OrderService.class);
+        getConfigurationWeb = retrofit.create(GetConfigurationWeb.class);
         ordernoteService = retrofit.create(OrderNoteService.class);
         areaDeliveryService = retrofit.create(AreaDeliveryService.class);
     }
@@ -146,6 +151,7 @@ public class RetrofitDelegateHelper {
                 .build();
 
         orderService = retrofit.create(OrderService.class);
+        getConfigurationWeb = retrofit.create(GetConfigurationWeb.class);
         ordernoteService = retrofit.create(OrderNoteService.class);
         areaDeliveryService = retrofit.create(AreaDeliveryService.class);
     }
@@ -175,6 +181,7 @@ public class RetrofitDelegateHelper {
                 .build();
 
         orderService = retrofit.create(OrderService.class);
+        getConfigurationWeb = retrofit.create(GetConfigurationWeb.class);
         ordernoteService = retrofit.create(OrderNoteService.class);
         areaDeliveryService = retrofit.create(AreaDeliveryService.class);
     }
@@ -205,6 +212,7 @@ public class RetrofitDelegateHelper {
                 .build();
 
         orderService = retrofit.create(OrderService.class);
+        getConfigurationWeb = retrofit.create(GetConfigurationWeb.class);
         ordernoteService = retrofit.create(OrderNoteService.class);
         areaDeliveryService = retrofit.create(AreaDeliveryService.class);
     }
@@ -1076,6 +1084,34 @@ public class RetrofitDelegateHelper {
 
     }
 
+    //Web Configurator
+    public void get_webconfiguration(final WebConfigurationDelegate delegate) {
+        getConfigurationWeb.get_webconfigurator_byapp().enqueue(new Callback<WebConfigurator>() {
+            @Override
+            public void onResponse(Call<WebConfigurator> call, Response<WebConfigurator> response) {
+                if (response.isSuccessful()) {
+                    Log.d("URL get_webconfig: ", response.raw().request().url().toString());
+                    Log.d("CODE get_webconfig : ", String.valueOf(response.code()));
+
+                    // Al recibir datos llamamos al método
+                    delegate.webConfigRecibido(response.body());
+                    delegate.closedialog();
+                } else {
+                    Log.d("error: ", String.valueOf(response.errorBody()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WebConfigurator> call, Throwable t) {
+                // En caso que no haya respuesta lanzamos el método para que indique el error
+                delegate.errorRecibido(t);
+                Log.d("Error: ", t.toString());
+                delegate.closedialog();
+            }
+        });
+
+    }
+
     //Get specific order by identifier.
     public void get_orderById(final AlRecibirListaDelegate delegate) {
         orderService.getorderById(idOrder, oauth_consumer_key, oauth_nonce, oauth_signature,
@@ -1185,6 +1221,12 @@ public class RetrofitDelegateHelper {
         void orderReceived(OrderUpdate order);
 
         void notMaxTime ();
+    }
+
+    public interface WebConfigurationDelegate {
+        void webConfigRecibido(WebConfigurator body);
+        void closedialog();
+        void errorRecibido(Object error);
     }
 
     public interface AlRecibirListaCommentsDelegate {

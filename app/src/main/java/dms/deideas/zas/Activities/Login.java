@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.List;
 import dms.deideas.zas.Constants;
 import dms.deideas.zas.Globals;
 import dms.deideas.zas.Model.Reparto;
+import dms.deideas.zas.Model.WebConfigurator;
 import dms.deideas.zas.Push.MyFirebaseInstanceIDService;
 import dms.deideas.zas.R;
 import dms.deideas.zas.Services.MotodriverGet;
@@ -40,8 +42,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class Login extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener, RetrofitDelegateHelper.AlRecibirListaDelegate {
-
+public class Login extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener, RetrofitDelegateHelper.AlRecibirListaDelegate, RetrofitDelegateHelper.WebConfigurationDelegate{
     protected ArrayAdapter adapter;
     HashMap<String, Integer> hashMuppets = new HashMap<String, Integer>();
     private EditText user, password;
@@ -267,7 +268,7 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
 
     @Override
     public void stringReceived(String nameFunction, String body) {
-        SharedPreferences prefs =
+/*        SharedPreferences prefs =
                 getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         //Save data of user in preferences
         SharedPreferences.Editor editor = prefs.edit();
@@ -286,7 +287,18 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
             timeMax = body;
             editor.putString(Constants.PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY, timeMax);
             editor.commit();
+        }*/
+    }
+
+    @Override
+    public void webConfigRecibido(WebConfigurator body) {
+        String array[] = new String[0];
+        for (int i = 0; i < 3; i++) {
+            array[0] = body.getMaxOrdersAccepted();
+            array[1] = body.getMaxOrdersVisible();
+            array[2] = body.getMaxTime();
         }
+        System.out.println(array);
     }
 
     @Override
