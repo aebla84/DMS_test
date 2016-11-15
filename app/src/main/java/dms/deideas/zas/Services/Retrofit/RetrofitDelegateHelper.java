@@ -81,9 +81,9 @@ public class RetrofitDelegateHelper {
 
         //Add Timeout in reply Retrofit's
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(12, TimeUnit.SECONDS)
+                .readTimeout(12, TimeUnit.SECONDS)
+                .writeTimeout(12, TimeUnit.SECONDS)
                 .build();
 
         //Build Retrofit
@@ -112,9 +112,9 @@ public class RetrofitDelegateHelper {
         oauth_signature = getSignature(oauth_consumer_secret);
 
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(12, TimeUnit.SECONDS)
+                .readTimeout(12, TimeUnit.SECONDS)
+                .writeTimeout(12, TimeUnit.SECONDS)
                 .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -140,9 +140,9 @@ public class RetrofitDelegateHelper {
         oauth_signature = getSignature(oauth_consumer_secret);
 
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(12, TimeUnit.SECONDS)
+                .readTimeout(12, TimeUnit.SECONDS)
+                .writeTimeout(12, TimeUnit.SECONDS)
                 .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -170,9 +170,9 @@ public class RetrofitDelegateHelper {
         oauth_signature = getSignature(oauth_consumer_secret);
 
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(12, TimeUnit.SECONDS)
+                .readTimeout(12, TimeUnit.SECONDS)
+                .writeTimeout(12, TimeUnit.SECONDS)
                 .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -201,9 +201,9 @@ public class RetrofitDelegateHelper {
         oauth_signature = getSignature(oauth_consumer_secret);
 
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(12, TimeUnit.SECONDS)
+                .readTimeout(12, TimeUnit.SECONDS)
+                .writeTimeout(12, TimeUnit.SECONDS)
                 .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -1100,9 +1100,9 @@ public class RetrofitDelegateHelper {
 
                     // Al recibir datos llamamos al método
                     delegate.webConfigRecibido(response.body());
-                    delegate.closedialog();
                 } else {
                     Log.d("error: ", String.valueOf(response.errorBody()));
+                    delegate.closedialog();
                 }
             }
 
@@ -1111,7 +1111,6 @@ public class RetrofitDelegateHelper {
                 // En caso que no haya respuesta lanzamos el método para que indique el error
                 delegate.errorRecibido(t);
                 Log.d("Error: ", t.toString());
-                delegate.closedialog();
             }
         });
 
