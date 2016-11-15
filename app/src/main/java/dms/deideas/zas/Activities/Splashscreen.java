@@ -124,14 +124,6 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
 
     @Override
     public void webConfigRecibido(WebConfigurator body) {
-        /*String array[] = new String[0];
-        for (int i = 0; i < 3; i++) {
-            array[0] = body.getMaxOrdersAccepted();
-            array[1] = body.getMaxOrdersVisible();
-            array[2] = body.getMaxTime();
-        }
-        System.out.println(array);
-*/
         SharedPreferences prefs =
                 getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         //Save data of user in preferences
@@ -150,28 +142,49 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
                 editor.putString(Constants.PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY,body.getMaxTime());
                 editor.commit();
             }
-            Intent intent = new Intent();
-            if(bopenLogin)
-            {
-                 intent = new Intent(Splashscreen.this, Login.class);
-            }
-            else
-            {
-                 intent = new Intent(Splashscreen.this, MainActivity.class);
-            }
-            startActivity(intent);
-            finish();
+        openActivity();
         }
     }
 
     @Override
     public void closedialog() {
-
+        Toast.makeText(this, this.getResources().getString(R.string.toast_error_open_activity), Toast.LENGTH_LONG).show();
+        savingVariablesPreferences();
+        openActivity();
     }
 
     @Override
     public void errorRecibido(Object error) {
-
+        Toast.makeText(this, this.getResources().getString(R.string.toast_error_open_activity), Toast.LENGTH_LONG).show();
+        savingVariablesPreferences();
+        openActivity();
     }
 
+    // Save fixed values for variables if the web configurator request is failing.
+    public void savingVariablesPreferences(){
+        SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        //Save data of user in preferences
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER,Constants.PREF_VALUE_MAX_ORDERS_ACCEPTED);
+        editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_VISIBLE,Constants.PREF_VALUE_MAX_ORDERS_VISIBLE);
+        editor.putString(Constants.PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY,Constants.PREF_VALUE_MAX_TIME_ORDERS);
+        editor.commit();
+    }
+
+    // Open activity if user don't do login.
+    public void openActivity(){
+        Intent intent = new Intent();
+        if(bopenLogin)
+        {
+            intent = new Intent(Splashscreen.this, Login.class);
+        }
+        else
+        {
+            intent = new Intent(Splashscreen.this, MainActivity.class);
+        }
+        startActivity(intent);
+        finish();
+    }
 }

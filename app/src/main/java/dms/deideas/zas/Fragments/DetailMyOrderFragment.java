@@ -672,24 +672,6 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
     //region Save location of motodriver like comment.
     //1.Initialize the locationManager and services
     public void saveLocation() {
-    /*    locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-
-        provider = locationManager.getBestProvider(criteria, false);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-        }
-        Location location = locationManager.getLastKnownLocation(provider);
-        Location getLastLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-
-        // Initialize the location fields
-        if (!getLastLocation.equals(null)) {
-            onLocationChanged(getLastLocation);
-        } else {
-            Toast.makeText(getContext(), R.string.toast_without_address_correctly, Toast.LENGTH_SHORT).show();
-        }*/
-
 
         if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED  && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)  == PackageManager.PERMISSION_GRANTED) {
