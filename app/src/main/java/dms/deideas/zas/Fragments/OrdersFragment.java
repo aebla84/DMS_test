@@ -126,7 +126,7 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
 
     public static OrdersFragment newInstance(String title) {
         Bundle b = new Bundle();
-        b.putString(Constants.ARGUMENT_TITLE, title);
+        b.putString("title", title);
         OrdersFragment fragment = new OrdersFragment();
         fragment.setArguments(b);
         return fragment;
@@ -134,9 +134,9 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
     private void readPreferences(){
         prefs = getActivity().getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         idUser = prefs.getInt(Constants.PREFERENCES_USER_ID, 0);
-        int_numOrders = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS, 0);
-        int_numMyOrders = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS_ACCEPTED, 0);
-        inumMyOrdersWithouProblems = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS_ACCEPTEDBYDRIVER, 0);
+        int_numOrders = prefs.getInt("numOrders", 0);
+        int_numMyOrders = prefs.getInt("numMyOrders", 0);
+        inumMyOrdersWithouProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
         areadelivery =  prefs.getString(Constants.PREFERENCES_AREA_DELIVERY, "");
         numberMaxOrdersVisible = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_VISIBLE, "");
         numMaxOrdersAccepted_BBDD = Integer.valueOf(prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, "0"));
@@ -147,6 +147,7 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
         super.onCreateView(inflater,container,savedInstanceState);
         view = inflater.inflate(R.layout.activity_orders, container, false);
 
+        //getActivity().setTitle(getArguments().getString("title"));
         ((MainActivity) getActivity()).setTitle(getArguments().getString("title"));
 
 
@@ -172,8 +173,8 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
 
         super.onCreate(savedInstanceState);
         readPreferences();
-        //Get Title
-        title = getArguments().getString(Constants.ARGUMENT_TITLE);
+        //Get Title "Pedidos"
+        title = getArguments().getString("title");
 
         //Get position user - Latitud and longitud in this moment.
         getpositionUser();
@@ -357,7 +358,7 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
         }
         else
         {
-            //Toast.makeText(getContext(),R.string.toast_without_address_correctly, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),R.string.toast_without_address_correctly, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -391,7 +392,7 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
                 return;
             }
         } else {
-            //Toast.makeText(getContext(), R.string.toast_without_address_correctly, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.toast_without_address_correctly, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -449,10 +450,14 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
 
     public void getOrders() {
 
+        /*progress = ProgressDialog.show(getContext(), null, "Cargando", false, false);
+        progress.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));*/
+
         progress = new ProgressDialog(getContext());
         progress.show();
         progress.setContentView(R.layout.custom);
         progress.setCanceledOnTouchOutside(false);
+
 
         TextView text = (TextView) progress.findViewById(R.id.text);
         ImageView image = (ImageView) progress.findViewById(R.id.zasSpin);

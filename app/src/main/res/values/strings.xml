@@ -168,7 +168,6 @@
     <string name="toast_wrong_location">"Debe guardar la dirección del cliente cuando llegue a su destino."</string>
     <string name="phone_error">Introduce un teléfono.</string>
     <string name="lblAreaDelivery">Zona de reparto</string>
-    <string name="toast_error_open_activity">Error abriendo actividad</string>
 
     <!-- Strings Adapters -->
     <string name="paid_home">Pagar en domicilio</string>
