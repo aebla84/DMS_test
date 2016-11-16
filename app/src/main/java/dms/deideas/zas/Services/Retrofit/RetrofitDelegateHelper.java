@@ -1089,7 +1089,7 @@ public class RetrofitDelegateHelper {
 
     }
 
-    //Web Configurator
+    //WebConfigurator
     public void get_webconfiguration(final WebConfigurationDelegate delegate) {
         getConfigurationWeb.get_webconfigurator_byapp().enqueue(new Callback<WebConfigurator>() {
             @Override
