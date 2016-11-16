@@ -149,4 +149,8 @@ public class Constants {
 
     public static final int MAP_CONTROL_Restaurant = 0;
     public static final int MAP_CONTROL_Client = 1;
+
+    public static final String PREF_VALUE_MAX_ORDERS_ACCEPTED = "3";
+    public static final String PREF_VALUE_MAX_ORDERS_VISIBLE = "10";
+    public static final String PREF_VALUE_MAX_TIME_ORDERS = "15";
 }
