@@ -85,7 +85,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
 
     private String questionStatus = "";
 
-    private ImageView icRestaurantWhite,icRestaurantRed,icMotoWhite,icRecogidoWhite,icRecogidoRed,icIncidenceRed,icIncidenceWhite,icFinishedWhite,icFinishedRed,icFinishedIncidenceRed,icFinishedIncidenceWhite;
+    private ImageView icRestaurantWhite,icRestaurantRed,icMotoWhite,icRecogidoWhite,icRecogidoRed,icIncidenceRed,icIncidenceWhite,icFinishedWhite,icFinishedRed,icFinishedIncidenceRed,icFinishedIncidenceWhite,imgBigOrder,imgDrinks;
     private TextView txtRestaurantWhite,txtRestaurantRed,txtMotoWhite,txtRecogidoWhite,txtRecogidoRed,txtIncidenceRed,txtIncidenceWhite, txtFinishedWhite,txtFinishedRed,txtFinishedIncidenceRed,txtFinishedIncidenceWhite;
 
     private RetrofitDelegateHelper restHelper;
@@ -232,6 +232,9 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
 
         saveLocation = (Button) view.findViewById(R.id.saveLocation);
         savePhone =(Button) view.findViewById(R.id.savePhone);
+
+        imgBigOrder = (ImageView) view.findViewById(R.id.imgBigOrder);
+        imgDrinks = (ImageView) view.findViewById(R.id.imgDrink);
     }
 
     private void setOnClickListener() {
@@ -298,6 +301,15 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
             imgLocationFail.setVisibility(View.VISIBLE);
         } else {imgLocationFail.setVisibility(View.INVISIBLE);
         }
+        if(order.getOrder_big()){
+            imgBigOrder.setVisibility(View.VISIBLE);
+        } else {imgBigOrder.setVisibility(View.INVISIBLE);
+        }
+        if(order.getOrder_has_drinks()){
+            imgDrinks.setVisibility(View.VISIBLE);
+        } else {imgDrinks.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     //Set text for button to change status and set the question that ask you the dialog

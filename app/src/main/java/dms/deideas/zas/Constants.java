@@ -28,19 +28,13 @@ public class Constants {
     public static final int SERVICE_CODE_problem_add_description = 9;
     public static final int SERVICE_CODE_notes_byuser = 10;
     public static final int SERVICE_CODE_history = 11;
-    public static final int SERVICE_CODE_order_count = 12;
-    public static final int SERVICE_CODE_order_count_byuser = 13;
     public static final int SERVICE_CODE_order_edit_cancelbymotodriver = 14;
     public static final int SERVICE_CODE_order_accepted_byareadelivery = 15;
     public static final int SERVICE_CODE_order_accepted_byuser_byareadelivery = 16;
     public static final int SERVICE_CODE_order_notesclient = 17;
     public static final int SERVICE_CODE_zone = 18;
-    public static final int SERVICE_CODE_number_max_orders_accepted = 19;
-    public static final int SERVICE_CODE_number_max_orders_visible = 20;
-    public static final int SERVICE_CODE_order_count_byareadelivery = 21;
     public static final int SERVICE_CODE_order_count_byuser_byareadelivery = 22;
     public static final int SERVICE_CODE_order_byidorder = 23;
-    public static final int SERVICE_CODE_max_time_orderchangecolor_inMyorders = 24;
     public static final int SERVICE_CODE_order_saveLocation = 25;
     public static final int SERVICE_CODE_configuratorweb = 26;
 

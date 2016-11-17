@@ -1,5 +1,6 @@
 package dms.deideas.zas.Services;
 
+import dms.deideas.zas.Model.HomeResponse;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -104,23 +105,7 @@ public interface OrderService {
                                    @Query("oauth_signature_method") String oauth_signature_method,
                                    @Query("oauth_timestamp") String oauth_timestamp);
 
-    // ServiceCode = 12;
-    @GET("wc-api/v2/orders/count_all")
-    Call<OrderCount> count(
-            @Query("oauth_consumer_key") String oauth_consumer_key,
-            @Query("oauth_nonce") String oauth_nonce,
-            @Query("oauth_signature") String oauth_signature,
-            @Query("oauth_signature_method") String oauth_signature_method,
-            @Query("oauth_timestamp") String oauth_timestamp);
 
-    // ServiceCode = 13;
-    @GET("wc-api/v2/orders/count_byIdUser/{id}")
-    Call<OrderCount> countByIdUser(@Path("id") int id,
-                                   @Query("oauth_consumer_key") String oauth_consumer_key,
-                                   @Query("oauth_nonce") String oauth_nonce,
-                                   @Query("oauth_signature") String oauth_signature,
-                                   @Query("oauth_signature_method") String oauth_signature_method,
-                                   @Query("oauth_timestamp") String oauth_timestamp);
 
     // ServiceCode = 14;
     @POST("wc-api/v2/orders/edit_order_cancelbymotodriver/{id}")
@@ -151,32 +136,17 @@ public interface OrderService {
                                                @Query("oauth_signature_method") String oauth_signature_method,
                                                @Query("oauth_timestamp") String oauth_timestamp);
 
-    // ServiceCode = 19
-    @GET("wp-json/wp/v2/get_maxnumber_orders_accepted")
-    Call<String> get_maxnumber_orders_accepted();
-
-    // ServiceCode = 20
-    @GET("wp-json/wp/v2/get_maxnumber_orders_visible_inlist")
-    Call<String> get_maxnumber_orders_visible_inlist();
-
-    // ServiceCode = 21;
-    @GET("wc-api/v2/orders/count_byareadelivery/{area}")
-    Call<OrderCount> countByAreaDelivery(@Path("area") String strArea,
-                                         @Query("oauth_consumer_key") String oauth_consumer_key,
-                                         @Query("oauth_nonce") String oauth_nonce,
-                                         @Query("oauth_signature") String oauth_signature,
-                                         @Query("oauth_signature_method") String oauth_signature_method,
-                                         @Query("oauth_timestamp") String oauth_timestamp);
 
     // ServiceCode = 22;
     @GET("wc-api/v2/orders/count_byuserbyareadelivery/{id}/{area}")
-    Call<OrderCount> countByUserByAreaDelivery(@Path("id") int id,
+    Call<HomeResponse> countOrders_tohomepage(@Path("id") int id,
                                                @Path("area") String strArea,
                                                @Query("oauth_consumer_key") String oauth_consumer_key,
                                                @Query("oauth_nonce") String oauth_nonce,
                                                @Query("oauth_signature") String oauth_signature,
                                                @Query("oauth_signature_method") String oauth_signature_method,
                                                @Query("oauth_timestamp") String oauth_timestamp);
+
 
     // ServiceCode = 23;
     @GET("wc-api/v2/orders/{id}")
@@ -188,10 +158,6 @@ public interface OrderService {
                                    @Query("oauth_timestamp") String oauth_timestamp);
 
 
-    // ServiceCode = 24
-    @GET("wp-json/wp/v2/get_driver_max_time")
-    Call<String> get_maxtime_inlist();
-
 
     // ServiceCode = 25;
     @POST("wc-api/v2/orders/save_shipping_latlong/{id}")
@@ -202,4 +168,5 @@ public interface OrderService {
                                     @Query("oauth_signature") String oauth_signature,
                                     @Query("oauth_signature_method") String oauth_signature_method,
                                     @Query("oauth_timestamp") String oauth_timestamp);
+
 }

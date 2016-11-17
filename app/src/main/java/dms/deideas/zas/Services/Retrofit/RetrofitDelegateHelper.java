@@ -18,6 +18,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import dms.deideas.zas.Constants;
 import dms.deideas.zas.Globals;
+import dms.deideas.zas.Model.HomeResponse;
 import dms.deideas.zas.Model.Incidencia;
 import dms.deideas.zas.Model.Order;
 import dms.deideas.zas.Model.OrderNote;
@@ -112,9 +113,9 @@ public class RetrofitDelegateHelper {
         oauth_signature = getSignature(oauth_consumer_secret);
 
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(12, TimeUnit.SECONDS)
-                .readTimeout(12, TimeUnit.SECONDS)
-                .writeTimeout(12, TimeUnit.SECONDS)
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
                 .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -140,9 +141,9 @@ public class RetrofitDelegateHelper {
         oauth_signature = getSignature(oauth_consumer_secret);
 
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(12, TimeUnit.SECONDS)
-                .readTimeout(12, TimeUnit.SECONDS)
-                .writeTimeout(12, TimeUnit.SECONDS)
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
                 .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -307,14 +308,6 @@ public class RetrofitDelegateHelper {
             Log.d("Service Code", "11, haciendo GET");
             BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fhistory%2F" + idUser;
             baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == Constants.SERVICE_CODE_order_count) {
-            Log.d("Service Code", "12, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_all";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == Constants.SERVICE_CODE_order_count_byuser) {
-            Log.d("Service Code", "13, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_byIdUser%2F" + idUser;
-            baseString = "GET&" + BASE_URL_CODIFIED;
         } else if (serviceCode == Constants.SERVICE_CODE_order_edit_cancelbymotodriver) {
             Log.d("Service Code", "14, haciendo POST");
             BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fedit_order_cancelbymotodriver%2F" + idOrder;
@@ -335,30 +328,13 @@ public class RetrofitDelegateHelper {
             Log.d("Service Code", "18, haciendo GET");
             BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_areadelivery";
             baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == Constants.SERVICE_CODE_number_max_orders_accepted) {
-            Log.d("Service Code", "19, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_maxnumber_orders_accepted";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == Constants.SERVICE_CODE_number_max_orders_visible) {
-            Log.d("Service Code", "20, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_maxnumber_orders_visible_inlist";
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == Constants.SERVICE_CODE_order_count_byareadelivery) {
-            Log.d("Service Code", "21, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_byareadelivery%2F" + strArea;
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        } else if (serviceCode == Constants.SERVICE_CODE_order_count_byuser_byareadelivery) {
+        }  else if (serviceCode == Constants.SERVICE_CODE_order_count_byuser_byareadelivery) {
             Log.d("Service Code", "22, haciendo GET");
             BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_byuserbyareadelivery%2F" + idUser + "%2F" + strArea;
             baseString = "GET&" + BASE_URL_CODIFIED;
         } else if (serviceCode == Constants.SERVICE_CODE_order_byidorder) {
             Log.d("Service Code", "23, haciendo GET");
             BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2F" + idOrder;
-            baseString = "GET&" + BASE_URL_CODIFIED;
-        }
-        else if (serviceCode == Constants.SERVICE_CODE_max_time_orderchangecolor_inMyorders) {
-            Log.d("Service Code", "24, haciendo GET");
-            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%2Fget_driver_max_time";
             baseString = "GET&" + BASE_URL_CODIFIED;
         }
         else if (serviceCode == Constants.SERVICE_CODE_order_saveLocation) {
@@ -371,7 +347,6 @@ public class RetrofitDelegateHelper {
             BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%get_webconfigurator_byapp";
             baseString = "GET&" + BASE_URL_CODIFIED;
         }
-
         //endregion
 
         baseString = baseString + "&oauth_consumer_key%3D" + oauth_consumer_key
@@ -563,33 +538,6 @@ public class RetrofitDelegateHelper {
         });
     }
 
-    //Obtain the admin order notes for an order ( NOT USED - copy of getOrderNotesByIdOrder)
-    public void getOrderNotesClientByIdOrder(final AlRecibirListaCommentsDelegate delegate) {
-        ordernoteService.getlistNoteClientOrder(idOrder, oauth_consumer_key, oauth_nonce, oauth_signature,
-                oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderNoteGet>() {
-            @Override
-            public void onResponse(Call<OrderNoteGet> call, Response<OrderNoteGet> response) {
-                if (response.isSuccessful()) {
-                    Log.d("URL OrdersProblemById: ", response.raw().request().url().toString());
-                    Log.d("CODE OrdProblemById: ", String.valueOf(response.code()));
-
-                    delegate.listaRecibida(response.body());
-                }
-                else
-                {
-                    Log.d("error: ", String.valueOf(response.errorBody()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<OrderNoteGet> call, Throwable t) {
-
-                // En caso que no haya respuesta lanzamos el método para que indique el error
-                delegate.errorRecibido(t);
-                Log.d("Error: ", t.toString());
-            }
-        });
-    }
 
     //Obtain all orders filtered by orderstatus = "order_delivered_w_problem"  and "order_delivered"   by motodriver
     public void getOrderHistorical(final AlRecibirListaDelegate delegate) {
@@ -788,88 +736,36 @@ public class RetrofitDelegateHelper {
 
     }
 
-    //Obtain the total number of orders . Filtered by orderstatus = "rest_has_accepted"  and orderstatus = "problem" , motodriver = 0 user of aplication and shipping_lines_method_id = "distance_rate"
-    public void getOrdersCount(final numOrders numOrders) {
-        orderService.count(oauth_consumer_key, oauth_nonce, oauth_signature,
-                oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderCount>() {
-                 @Override
-                 public void onResponse(Call<OrderCount> call, Response<OrderCount> response) {
-                     Log.d("URL getOrdersCount: ", response.raw().request().url().toString());
-                     Log.d("CODE getOrdersCount: ", String.valueOf(response.code()));
-                     numOrders.setText(response.body(), "1");
-                 }
-                 @Override
-                 public void onFailure(Call<OrderCount> call, Throwable t) {
-                     Log.d("Error", "No respuesta");
-                 }
-             }
-        );
-    }
 
-    //Get the total number of orders by IdUser.
-    // Filtered by orderstatus different (rest_has_accepted, order_delivered, order_delivered_w_problem ), motodriver = idUser user of aplication and shipping_lines_method_id = "distance_rate"
-    public void getOrdersCountByIdUser(final numOrders numOrders) {
-        orderService.countByIdUser(idUser, oauth_consumer_key, oauth_nonce, oauth_signature,
-                oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderCount>() {
-            @Override
-            public void onResponse(Call<OrderCount> call, Response<OrderCount> response) {
-
-                Log.d("URL OrdersProblemById: ", response.raw().request().url().toString());
-                Log.d("CODE OrdProblemById: ", String.valueOf(response.code()));
-                numOrders.setText(response.body(), "2");
-            }
-
-            @Override
-            public void onFailure(Call<OrderCount> call, Throwable t) {
-                Log.d("Error", "No respuesta");
-            }
-        });
-    }
-
-    //Obtain the total number of orders .
+    //From HOME:
+    //Get Object that contains :
+    //Obtain the total number
     // Filtered by orderstatus = "rest_has_accepted"  and orderstatus = "problem" , motodriver = 0 user of aplication and shipping_lines_method_id = "distance_rate" and by Area Delivery
-    public void getOrdersCountByAreaDelivery(final numOrders numOrders) {
-        orderService.countByAreaDelivery(strArea, oauth_consumer_key, oauth_nonce, oauth_signature,
-                oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderCount>() {
-            @Override
-            public void onResponse(Call<OrderCount> call, Response<OrderCount> response) {
-                if (response.isSuccessful()) {
-                    Log.d("URL OrdCountByArDel: ", response.raw().request().url().toString());
-                    Log.d("CODE OrdCountByArDel: ", String.valueOf(response.code()));
-                    numOrders.setText(response.body(), "1");
-                }
-                else {
-                    Log.d("error: ", String.valueOf(response.errorBody()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<OrderCount> call, Throwable t) {
-                Log.d("Error", "No respuesta");
-            }
-        });
-    }
-
-    //Get the total number of orders by IdUser.
+    //Get the total number of orders .
     // Filtered by orderstatus different (rest_has_accepted, order_delivered, order_delivered_w_problem ), motodriver = idUser user of aplication and shipping_lines_method_id = "distance_rate"and by Area Delivery
-    public void getOrdersCountByUserAreaDelivery(final numOrders numOrders) {
-        orderService.countByUserByAreaDelivery(idUser,strArea, oauth_consumer_key, oauth_nonce, oauth_signature,
-                oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderCount>() {
+    //Get the total number of orders
+    // Filtered by orderstatus different (rest_has_accepted, order_delivered, order_delivered_w_problem,problem ), motodriver = idUser user of aplication and shipping_lines_method_id = "distance_rate"and by Area Delivery
+    public void getCountOrders(final homeResponse homeResponse) {
+        orderService.countOrders_tohomepage(idUser,strArea, oauth_consumer_key, oauth_nonce, oauth_signature,
+                oauth_signature_method, oauth_timestamp).enqueue(new Callback<HomeResponse>() {
             @Override
-            public void onResponse(Call<OrderCount> call, Response<OrderCount> response) {
+            public void onResponse(Call<HomeResponse> call, Response<HomeResponse> response) {
                 if (response.isSuccessful()) {
                     Log.d("URL OrdCountByArDel: ", response.raw().request().url().toString());
                     Log.d("CODE OrdCountByArDel: ", String.valueOf(response.code()));
-                    numOrders.setText(response.body(), "2");
+                    //numOrders.setText(response.body(), "2");
+                    homeResponse.response(response.body());
                 }
                 else {
                     Log.d("error: ", String.valueOf(response.errorBody()));
+                    homeResponse.closedialog();
                 }
             }
 
             @Override
-            public void onFailure(Call<OrderCount> call, Throwable t) {
+            public void onFailure(Call<HomeResponse> call, Throwable t) {
                 Log.d("Error", "No respuesta");
+                homeResponse.closedialog();
             }
         });
     }
@@ -998,98 +894,14 @@ public class RetrofitDelegateHelper {
         });
     }
 
-    //Get number that especify the maximum number of orders that can be accepted by the user trhough app.
-    //It can modify in website. You have tab "Opt" is options. An then tab "App Settings"
-    public void get_maxnumber_orders_accepted(final AlRecibirListaDelegate delegate) {
-        orderService.get_maxnumber_orders_accepted().enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    Log.d("URL get_maxnumber: ", response.raw().request().url().toString());
-                    Log.d("CODE get_maxnumber : ", String.valueOf(response.code()));
 
-                    // Al recibir datos llamamos al método
-                    delegate.stringReceived("get_maxnumber_orders_accepted",response.body());
-                    delegate.closedialog();
-                } else {
-                    Log.d("error: ", String.valueOf(response.errorBody()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                // En caso que no haya respuesta lanzamos el método para que indique el error
-                delegate.errorRecibido(t);
-                Log.d("Error: ", t.toString());
-                delegate.closedialog();
-            }
-        });
-
-    }
-
-    //Get number that especify the maximum number of orders (cards of orders) that can be visibles in ths screen "Pedidos".
-    //It can modify in website. You have tab "Opt" is options. An then tab "App Settings"
-    public void get_maxnumber_orders_visible(final AlRecibirListaDelegate delegate) {
-        orderService.get_maxnumber_orders_visible_inlist().enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    Log.d("URL get_maxnumber: ", response.raw().request().url().toString());
-                    Log.d("CODE get_maxnumber : ", String.valueOf(response.code()));
-
-                    // Al recibir datos llamamos al método
-                    delegate.stringReceived("get_maxnumber_orders_visible",response.body());
-                    delegate.closedialog();
-                } else {
-                    Log.d("error: ", String.valueOf(response.errorBody()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                // En caso que no haya respuesta lanzamos el método para que indique el error
-                delegate.errorRecibido(t);
-                Log.d("Error: ", t.toString());
-                delegate.closedialog();
-            }
-        });
-
-    }
-
-    //Get number  that especify the maximum minutes that order (in "MIS PEDIDOS" screen) will not be black color (This means that is prioritary).
-    //It can modify in website. You have tab "Opt" is options. An then tab "App Settings"
-    public void get_maxtime(final AlRecibirListaDelegate delegate) {
-        orderService.get_maxtime_inlist().enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    Log.d("URL get_maxtime: ", response.raw().request().url().toString());
-                    Log.d("CODE get_max_time : ", String.valueOf(response.code()));
-
-                    // Al recibir datos llamamos al método
-                    delegate.stringReceived("get_maxtime", response.body());
-                    delegate.closedialog();
-                } else {
-                    delegate.notMaxTime();
-                    Log.d("error: ", String.valueOf(response.errorBody()));
-                    Log.d("URL get_maxtime: ", response.raw().request().url().toString());
-                    Log.d("CODE get_max_time : ", String.valueOf(response.code()));
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                // En caso que no haya respuesta lanzamos el método para que indique el error
-                delegate.errorRecibido(t);
-                Log.d("Error: ", t.toString());
-                delegate.closedialog();
-            }
-        });
-
-    }
 
     //Web Configurator
+    //Get Object that contains :
+    // number that especify the maximum number of orders that can be accepted by the user trhough app.
+    // number that especify the maximum number of orders (cards of orders) that can be visibles in ths screen "Pedidos".
+    // number  that especify the maximum minutes that order (in "MIS PEDIDOS" screen) will not be black color (This means that is prioritary).
+    //It can modify in website. You have tab "Opt" is options. An then tab "App Settings"
     public void get_webconfiguration(final WebConfigurationDelegate delegate) {
         getConfigurationWeb.get_webconfigurator_byapp().enqueue(new Callback<WebConfigurator>() {
             @Override
@@ -1145,6 +957,7 @@ public class RetrofitDelegateHelper {
             }
         });
     }
+
 
     //Update post meta Shipping_latlong - Add latitud and longitude from app by motodriver (Button Save location)
     public void saveLocation(final response bResult ,String locationClient) {
@@ -1254,6 +1067,11 @@ public class RetrofitDelegateHelper {
     public interface numOrders {
         void setText(OrderCount body, String element);
     }
+    public interface homeResponse {
+        void response(HomeResponse body);
+        void closedialog( );
+    }
+
 
     public interface response{
         void hascreatecomment(Boolean bResult);

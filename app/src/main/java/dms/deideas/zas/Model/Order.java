@@ -55,6 +55,8 @@ public class Order implements Serializable {
     private String restaurant_foodpriority;
     @SerializedName("shipping_latlong")
     private String shipping_latlong;
+    @SerializedName("order_has_drinks")
+    private Boolean order_has_drinks;
 
     public Order() {
     }
@@ -236,5 +238,13 @@ public class Order implements Serializable {
 
     public void setShipping_latlong(String shipping_latlong) {
         this.shipping_latlong = shipping_latlong;
+    }
+
+    public Boolean getOrder_has_drinks() {
+        return order_has_drinks;
+    }
+
+    public void setOrder_has_drinks(Boolean order_has_drinks) {
+        this.order_has_drinks = order_has_drinks;
     }
 }

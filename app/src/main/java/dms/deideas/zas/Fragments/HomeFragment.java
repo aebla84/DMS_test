@@ -31,6 +31,7 @@ import dms.deideas.zas.Activities.MainActivity;
 import dms.deideas.zas.Adapters.OrderAdapter;
 import dms.deideas.zas.Constants;
 import dms.deideas.zas.Globals;
+import dms.deideas.zas.Model.HomeResponse;
 import dms.deideas.zas.Model.Order;
 import dms.deideas.zas.Model.Reparto;
 import dms.deideas.zas.Push.MyFirebaseInstanceIDService;
@@ -56,7 +57,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Fragmento Home
  */
-public class HomeFragment extends Fragment implements View.OnClickListener, RetrofitDelegateHelper.numOrders, RetrofitDelegateHelper.AlRecibirListaDelegate {
+public class HomeFragment extends Fragment implements View.OnClickListener,RetrofitDelegateHelper.homeResponse {
 
     //region Declare variables
     private ImageButton order;
@@ -171,22 +172,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Retr
         image.startAnimation(animation);
         //endregion
 
-        //region Call getOrdersCountByAreaDelivery and getOrdersCountByUserAreaDelivery
+        //region Call getCountOrders
         Retrofit retrofit;
         Globals g = Globals.getInstance();
-
-        try {
-            g.setServiceCode(Constants.SERVICE_CODE_order_count_byareadelivery);
-            restHelper = new RetrofitDelegateHelper(0, 0,areadelivery);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
-        //restHelper.getOrdersCount(this);
-        restHelper.getOrdersCountByAreaDelivery(this);
 
         try {
             g.setServiceCode(Constants.SERVICE_CODE_order_count_byuser_byareadelivery);
@@ -198,112 +186,54 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Retr
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
-        //restHelper.getOrdersCountByIdUser(this);
-        restHelper.getOrdersCountByUserAreaDelivery(this);
+        restHelper.getCountOrders(this);
 
         //endregion
 
-        numOfOrdersAcceptedByDriver();
     }
 
-    private void numOfOrdersAcceptedByDriver() {
-        int intResult = 0;
-        Globals g = Globals.getInstance();
-        // Get orders accepted by idUser
-        g.setServiceCode(Constants.SERVICE_CODE_order_accepted_byuser_byareadelivery);
-        try {
-            restHelper = new RetrofitDelegateHelper(0, idUser,areadelivery);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
-        //restHelper.getOrdersByUser(this);
-        restHelper.getOrdersByUserAndArea(this);
-
-    }
-
-    public void setText(OrderCount body, String element) {
-        SharedPreferences.Editor editor = prefs.edit();
-        switch (element) {
-            case "1":
-                if(body!= null && body.getCount() > 0)
-                {
-                    numOrders.setText(String.valueOf(body.getCount()));
-                    editor.putInt("numOrders", body.getCount());
-                }
-                else{
-
-                    numOrders.setText("0");
-                    editor.putInt("numOrders", 0);
-                }
-                editor.commit();
-                break;
-            case "2":
-                if (body != null && body.getCount() > 0) {
-                    numMyOrders.setText(String.valueOf(body.getCount()));
-                    editor.putInt("numMyOrders", body.getCount());
-                }
-                else{
-                        numMyOrders.setText("0");
-                        editor.putInt("numMyOrders",0);
-                    }
-                editor.commit();
-                progress.dismiss();
-                break;
-            default:
-                break;
-        }
-    }
 
     @Override
-    public void listaRecibida(OrderSearch body) {
+    public void response(HomeResponse body) {
         SharedPreferences.Editor editor = prefs.edit();
-        if(body!= null){
-            editor.putInt("numMyOrdersWithouProblems",body.getOrders().size());
-        }
-        else{
-            editor.putInt("numMyOrdersWithouProblems",0);
-        }
-        editor.commit();
-    }
 
-    @Override
-    public void errorRecibido(Object error) {
+        if(body!= null )
+        {
+            Integer intnumOrders = body.getCountOrdersByArea();
+            Integer intnumMyOrders = body.getCountOrdersByAreaByUser();
+            Integer intnumMyOrdersWithouProblems = body.getCountOrdersByAreaByUser_NotProblems();
 
+            if(intnumOrders > 0){
+                numOrders.setText(String.valueOf(intnumOrders));
+                editor.putInt("numOrders",intnumOrders);
+            }
+            else{
+                numOrders.setText("0");
+                editor.putInt("numOrders", 0);
+            }
+            if(intnumMyOrders > 0){
+
+                numMyOrders.setText(String.valueOf(intnumMyOrders));
+                editor.putInt("numMyOrders",intnumMyOrders);
+            }
+            else{
+                numMyOrders.setText("0");
+                editor.putInt("numMyOrders", 0);
+            }
+            if(intnumMyOrdersWithouProblems > 0){
+                editor.putInt("numMyOrdersWithouProblems",intnumMyOrdersWithouProblems);
+            }
+            else{
+                editor.putInt("numMyOrdersWithouProblems", 0);
+            }
+
+            editor.commit();
+        }
+        if(progress!= null)  progress.dismiss(); // Close progress dialog
     }
 
     @Override
     public void closedialog() {
-
+        if(progress!= null)  progress.dismiss();
     }
-
-    @Override
-    public void arrayRecibido(ArrayList<String> body) {
-
-    }
-
-    @Override
-    public void areaDeliveryRecived(ArrayList<Reparto> body) {
-
-    }
-
-    @Override
-    public void stringReceived(String namefunction, String body) {
-
-    }
-
-    @Override
-    public void orderReceived(OrderUpdate order) {
-
-    }
-
-    @Override
-    public void notMaxTime() {
-
-    }
-
-
 }

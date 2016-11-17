@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
@@ -42,7 +43,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class Login extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener, RetrofitDelegateHelper.AlRecibirListaDelegate{
+public class Login extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener, RetrofitDelegateHelper.AlRecibirListaDelegate,RetrofitDelegateHelper.WebConfigurationDelegate {
     protected ArrayAdapter adapter;
     HashMap<String, Integer> hashMuppets = new HashMap<String, Integer>();
     private EditText user, password;
@@ -55,7 +56,7 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
     private String idAreaDelivery = Constants.STRING_EMPTY;
     private String strAreaDelivery = Constants.STRING_EMPTY;
     private Integer IntnumberMaxOrders = 0;
-    private String numberMaxOrders =Constants.STRING_EMPTY;
+    private String numberMaxOrders = Constants.STRING_EMPTY;
     private String numberMaxOrdersVisible = Constants.STRING_EMPTY;
 
     private Spinner area_delivery;
@@ -72,6 +73,10 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         setContentView(R.layout.activity_login);
         area_deliverySpinners();
         setViews();
+        //check if parameter is load. Is possible that user logout and then login and this parameters could be empty. It's a problem
+        if (IntnumberMaxOrders == 0) {
+            getConfigurationByWeb();
+        }
         message.setText("");
         enterApp.setOnClickListener(this);
     }
@@ -213,11 +218,6 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
     }
 
     @Override
-    public void closedialog() {
-
-    }
-
-    @Override
     public void arrayRecibido(ArrayList<String> body) {
         List<String> zoneList = new ArrayList<>();
         zoneList.add(getResources().getString(R.string.prompt_area));
@@ -275,21 +275,6 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
 
     }
 
-
-
-
-    private void callRetrofit() {
-        try {
-            restHelper = new RetrofitDelegateHelper();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
-    }
-
     // For error 500, not time specified on server set value 120 or other for default
     @Override
     public void notMaxTime() {
@@ -302,4 +287,66 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         editor.commit();
     }
 
+
+    private void getConfigurationByWeb() {
+        Globals g = Globals.getInstance();
+
+        g.setServiceCode(Constants.SERVICE_CODE_configuratorweb);
+        callRetrofit();
+        restHelper.get_webconfiguration(this);
+    }
+
+    private void callRetrofit() {
+        try {
+            restHelper = new RetrofitDelegateHelper();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void webConfigRecibido(WebConfigurator body) {
+        SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        //Save data of user in preferences
+        SharedPreferences.Editor editor = prefs.edit();
+        if(body != null)
+        {
+            if (body.getMaxOrdersAccepted()!= null && Integer.valueOf(body.getMaxOrdersAccepted()) > 0) {
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, body.getMaxOrdersAccepted());
+                editor.commit();
+            }
+            if (body.getMaxOrdersVisible()!= null && Integer.valueOf(body.getMaxOrdersVisible()) > 0) {
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_VISIBLE,body.getMaxOrdersVisible());
+                editor.commit();
+            }
+            if (body.getMaxTime()!= null && Integer.valueOf(body.getMaxTime()) > 0) {
+                editor.putString(Constants.PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY,body.getMaxTime());
+                editor.commit();
+            }
+        }
+    }
+
+    @Override
+    public void closedialog() {
+        Toast.makeText(this, this.getResources().getString(R.string.toast_error_open_activity), Toast.LENGTH_LONG).show();
+        savingVariablesWebConfig();
+    }
+    // Save fixed values for variables if the web configurator request is failing.
+    public void savingVariablesWebConfig(){
+        SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        //Save data of user in preferences
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putString(Constants.PREF_VALUE_MAX_ORDERS_ACCEPTED, "3");
+        editor.putString(Constants.PREF_VALUE_MAX_ORDERS_VISIBLE, "10");
+        editor.putString(Constants.PREF_VALUE_MAX_TIME_ORDERS, "15");
+        editor.commit();
+    }
 }
