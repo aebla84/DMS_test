@@ -334,7 +334,6 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
 
     @Override
     public void closedialog() {
-        Toast.makeText(this, this.getResources().getString(R.string.toast_error_open_activity), Toast.LENGTH_LONG).show();
         savingVariablesWebConfig();
     }
     // Save fixed values for variables if the web configurator request is failing.

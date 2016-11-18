@@ -74,7 +74,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
     private ImageView phone_restaurant, phone_customer, imgpointClock, imgLocationFail;
     private TextView tv_phone_customer, state_of_payment, comments, incidents;
     private Button accept, disallocate, saveLocation, savePhone, btnincidencia;
-    private RelativeLayout dtorder_problems;
+    private RelativeLayout dtorder_problems, warningLayout;
     private List<OrderNote> lstcomments;
     private List<Incidencia> lstproblems;
     private ProgressDialog progress;
@@ -229,6 +229,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
         icFinishedIncidenceWhite = (ImageView) view.findViewById(R.id.icFinishedIncidenceWhite);
         txtFinishedIncidenceWhite = (TextView) view.findViewById(R.id.txtFinishedIncidenceWhite);
         dtorder_problems = (RelativeLayout) view.findViewById(R.id.relLay_dtorder_problems);
+        warningLayout = (RelativeLayout) view.findViewById(R.id.warningLayout);
 
         saveLocation = (Button) view.findViewById(R.id.saveLocation);
         savePhone =(Button) view.findViewById(R.id.savePhone);
@@ -301,11 +302,14 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
             imgLocationFail.setVisibility(View.VISIBLE);
         } else {imgLocationFail.setVisibility(View.INVISIBLE);
         }
+
         if(order.getOrder_big()){
+            warningLayout.setVisibility(View.VISIBLE);
             imgBigOrder.setVisibility(View.VISIBLE);
         } else {imgBigOrder.setVisibility(View.INVISIBLE);
         }
         if(order.getOrder_has_drinks()){
+            warningLayout.setVisibility(View.VISIBLE);
             imgDrinks.setVisibility(View.VISIBLE);
         } else {imgDrinks.setVisibility(View.INVISIBLE);
         }

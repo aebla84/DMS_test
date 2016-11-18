@@ -594,7 +594,8 @@
                 android:background="@color/colorAccent"
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/detail_paddingLeft"
-                android:paddingRight="@dimen/detail_paddingRight">
+                android:paddingRight="@dimen/detail_paddingRight"
+                >
 
                 <ImageView
                     android:id="@+id/imgPhoneCustomer"
@@ -642,7 +643,9 @@
                 android:gravity="right"
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/detail_paddingLeft"
-                android:paddingRight="@dimen/detail_paddingRight">
+                android:paddingRight="@dimen/detail_paddingRight"
+                android:id="@+id/warningLayout"
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -824,17 +827,17 @@
                 android:showDividers="middle"
                 android:paddingBottom="@dimen/detail_paddingBottom">
 
-            <Button
-                android:id="@+id/savePhone"
-                style="@style/thirdTitleAvenirFont_pink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:paddingLeft="@dimen/card_paddingLeft"
-                android:paddingRight="@dimen/card_paddingRight"
-                android:text="@string/btn_savephone"
-                android:layout_centerInParent="true"
-                android:visibility="gone"/>
+                <Button
+                    android:id="@+id/savePhone"
+                    style="@style/thirdTitleAvenirFont_pink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingLeft="@dimen/card_paddingLeft"
+                    android:paddingRight="@dimen/card_paddingRight"
+                    android:text="@string/btn_savephone"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"/>
             </RelativeLayout>
 
         </LinearLayout>
