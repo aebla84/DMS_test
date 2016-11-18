@@ -649,32 +649,26 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginBottom="103dp">
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tool:srcCompat="@drawable/ic_drink"
+                        android:id="@+id/imgDrink"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true" />
 
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tool:srcCompat="@drawable/ic_big3_40dp"
+                        android:id="@+id/imgBigOrder"
+                        android:layout_alignParentTop="true"
+                        android:layout_toRightOf="@+id/imgDrink"
+                        android:layout_toEndOf="@+id/imgDrink" />
                 </RelativeLayout>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tool:srcCompat="@drawable/cast_ic_notification_1"
-                    android:id="@+id/imgDrink"
-                    android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/imgBigOrder"
-                    android:layout_toEndOf="@+id/imgBigOrder"
-                    android:layout_marginLeft="14dp"
-                    android:layout_marginStart="14dp"
-                    android:layout_alignParentBottom="true" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tool:srcCompat="@drawable/ic_big3_40dp"
-                    android:id="@+id/imgBigOrder"
-                    android:layout_alignParentTop="true" />
 
             </RelativeLayout>
 
