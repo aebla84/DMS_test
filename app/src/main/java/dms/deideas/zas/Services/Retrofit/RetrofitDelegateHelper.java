@@ -65,6 +65,7 @@ public class RetrofitDelegateHelper {
     private String oauth_signature = null;
     private int idUser = 0;
     private String strArea = "";
+    private String strKilometers = "";
     private int idOrder = 0;
     private Incidencia problem_details;
     private OrderNote order_note;
@@ -134,6 +135,35 @@ public class RetrofitDelegateHelper {
         this.idUser = idUser;
         this.idOrder = idOrder;
         this.strArea = strArea;
+
+        // Initiate params
+        oauth_nonce = getNonce();
+        oauth_timestamp = getTimestamp();
+        oauth_signature = getSignature(oauth_consumer_secret);
+
+        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
+                .build();
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+
+        orderService = retrofit.create(OrderService.class);
+        getConfigurationWeb = retrofit.create(GetConfigurationWeb.class);
+        ordernoteService = retrofit.create(OrderNoteService.class);
+        areaDeliveryService = retrofit.create(AreaDeliveryService.class);
+    }
+
+    public RetrofitDelegateHelper(int idOrder, int idUser,String strArea,String strKilometers) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+
+        this.idUser = idUser;
+        this.idOrder = idOrder;
+        this.strArea = strArea;
+        this.strKilometers = strKilometers;
 
         // Initiate params
         oauth_nonce = getNonce();
@@ -347,6 +377,18 @@ public class RetrofitDelegateHelper {
             BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wp-json%2Fwp%2Fv2%get_webconfigurator_byapp";
             baseString = "GET&" + BASE_URL_CODIFIED;
         }
+        else if (serviceCode == Constants.SERVICE_CODE_order_accepted_byareadelivery_bymaxdistance) {
+            Log.d("Service Code", "27, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Faccepted_byareadelivery_bymaxdistance%2F" + strArea + "%2F" + strKilometers;
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        }else if (serviceCode == Constants.SERVICE_CODE_order_count_byuser_byareadelivery_bymaxdistance) {
+            Log.d("Service Code", "28, haciendo GET");
+            BASE_URL_CODIFIED = Constants.URL_ZAS_retrofit + "wc-api%2Fv2%2Forders%2Fcount_byuserbyareadelivery_bymaxkilometers%2F" + idUser + "%2F" + strArea + "%2F" + strKilometers;
+            baseString = "GET&" + BASE_URL_CODIFIED;
+        }
+
+
+
         //endregion
 
         baseString = baseString + "&oauth_consumer_key%3D" + oauth_consumer_key
@@ -770,6 +812,39 @@ public class RetrofitDelegateHelper {
         });
     }
 
+    //From HOME:
+    //Get Object that contains :
+    //Obtain the total number
+    // Filtered by orderstatus = "rest_has_accepted"  and orderstatus = "problem" , motodriver = 0 user of aplication and shipping_lines_method_id = "distance_rate" and by Area Delivery
+    //Get the total number of orders .
+    // Filtered by orderstatus different (rest_has_accepted, order_delivered, order_delivered_w_problem ), motodriver = idUser user of aplication and shipping_lines_method_id = "distance_rate"and by Area Delivery
+    //Get the total number of orders
+    // Filtered by orderstatus different (rest_has_accepted, order_delivered, order_delivered_w_problem,problem ), motodriver = idUser user of aplication and shipping_lines_method_id = "distance_rate"and by Area Delivery
+    public void getCountOrdersByUserNew(final homeResponse homeResponse) {
+        orderService.countOrders_tohomepage_byusernew(idUser,strArea,strKilometers, oauth_consumer_key, oauth_nonce, oauth_signature,
+                oauth_signature_method, oauth_timestamp).enqueue(new Callback<HomeResponse>() {
+            @Override
+            public void onResponse(Call<HomeResponse> call, Response<HomeResponse> response) {
+                if (response.isSuccessful()) {
+                    Log.d("URL OrdCountByArDel: ", response.raw().request().url().toString());
+                    Log.d("CODE OrdCountByArDel: ", String.valueOf(response.code()));
+                    //numOrders.setText(response.body(), "2");
+                    homeResponse.response(response.body());
+                }
+                else {
+                    Log.d("error: ", String.valueOf(response.errorBody()));
+                    homeResponse.closedialog();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HomeResponse> call, Throwable t) {
+                Log.d("Error", "No respuesta");
+                homeResponse.closedialog();
+            }
+        });
+    }
+
     //Create a new order note for the given order
     public void addOrderNote(final response bResult) {
         OrderNote order = new OrderNote();
@@ -831,6 +906,40 @@ public class RetrofitDelegateHelper {
             }
         });
     }
+
+    //Get all orders filtered by orderstatus different (rest_has_accepted,problem, order_delivered, order_delivered_w_problem )
+    // and not motodriver  and shipping_lines_method_id = "distance_rate" and by Area Delivery and by Distance max less than Kilometers from configuration user defined by admin.
+    public void getOrdersByAreaDeliveryByMaxDistance(final AlRecibirListaDelegate delegate) {
+        orderService.listorders_byarea_bymaxkilometers(strArea,strKilometers, oauth_consumer_key, oauth_nonce, oauth_signature,
+                oauth_signature_method, oauth_timestamp).enqueue(new Callback<OrderSearch>() {
+            @Override
+            public void onResponse(Call<OrderSearch> call, Response<OrderSearch> response) {
+                if (response.isSuccessful()) {
+                    Log.d("URL getOrdersByArea", response.raw().request().url().toString());
+                    Log.d("CODE Orders-Area : ", String.valueOf(response.code()));
+                    // Al recibir datos llamamos al método
+                    delegate.listaRecibida(response.body());
+                    delegate.closedialog();
+                }
+                else
+                {
+                    Log.d("error: ", String.valueOf(response.errorBody()));
+                    delegate.closedialog();
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<OrderSearch> call, Throwable t) {
+                // En caso que no haya respuesta lanzamos el método para que indique el error
+                delegate.errorRecibido(t);
+                Log.d("Error: ", t.toString());
+                delegate.closedialog();
+            }
+        });
+    }
+
 
     //Get all orders filtered by orderstatus different (rest_has_accepted,problem, order_delivered, order_delivered_w_problem )
     // and by motodriver = id user of aplication and shipping_lines_method_id = "distance_rate" and by Area Delivery

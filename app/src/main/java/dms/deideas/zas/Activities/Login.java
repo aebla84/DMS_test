@@ -28,6 +28,7 @@ import java.util.List;
 import dms.deideas.zas.Constants;
 import dms.deideas.zas.Globals;
 import dms.deideas.zas.Model.Reparto;
+import dms.deideas.zas.Model.UserMeta;
 import dms.deideas.zas.Model.WebConfigurator;
 import dms.deideas.zas.Push.MyFirebaseInstanceIDService;
 import dms.deideas.zas.R;
@@ -36,6 +37,7 @@ import dms.deideas.zas.Services.MotodriverService;
 import dms.deideas.zas.Services.OrderSearch;
 import dms.deideas.zas.Services.OrderUpdate;
 import dms.deideas.zas.Services.Retrofit.RetrofitDelegateHelper;
+import dms.deideas.zas.Services.UserMetaGet;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,6 +66,8 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
     private Intent intent;
     private RetrofitDelegateHelper restHelper;
     private String timeMax = "";
+    private Boolean isUserNew = false;
+    private String distanceMax = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,8 +117,10 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
 
     @Override
     public void onClick(View v) {
-        Retrofit retrofit;
+        final Retrofit retrofit;
         final MotodriverService motodriverService;
+        final SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
 
         if (v == enterApp) {
 
@@ -136,27 +142,53 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
                             name = response.body().getData().getDisplay_name();
                             email = response.body().getData().getUser_email();
 
-                            long timelastLogin = System.currentTimeMillis() / 1000;
-                            SharedPreferences prefs =
-                                    getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
-                            //Save data of user in preferences
-                            SharedPreferences.Editor editor = savePreferences(timelastLogin, prefs);
+                            UserMetaGet userMetaGet;
+                            //Get More Data User from userMeta table
+                            userMetaGet = retrofit.create(UserMetaGet.class);
 
-                            //Save idUser and Token in BBDD
-                            String refreshedToken = prefs.getString(Constants.PREFERENCES_REFRESH_TOKEN, Constants.STRING_0);
-                            MyFirebaseInstanceIDService fb = new MyFirebaseInstanceIDService();
-                            if (refreshedToken == Constants.STRING_0) {
-                                refreshedToken = fb.getToken(iduser);
-                                editor.putString(Constants.PREFERENCES_REFRESH_TOKEN, refreshedToken);
-                                editor.commit();
-                            } else if (!refreshedToken.isEmpty() && iduser > 0) {
-                                fb.sendRegistrationToServer(refreshedToken);
-                            }
+                            userMetaGet.getUserMeta(user.getText().toString(), password.getText().toString()).enqueue(new Callback<UserMeta>() {
+                                @Override
+                                public void onResponse(Call<UserMeta> call, Response<UserMeta> response) {
+                                        if (response.body() != null) {
+                                            //Save User Meta
+                                            //if user is new
+                                            isUserNew = (response.body().getIs_driver_new().equals("1"))?true : false ;
+                                            //The maximum km that the user can take orders
+                                            distanceMax = response.body().getMaxdistance();
 
-                            //Start activity Main
-                            Intent intent = new Intent(Login.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
+
+                                            long timelastLogin = System.currentTimeMillis() / 1000;
+
+                                            //Save data of user in preferences
+                                            SharedPreferences.Editor editor = savePreferences(timelastLogin, prefs);
+
+                                            //Save idUser and Token in BBDD
+                                            String refreshedToken = prefs.getString(Constants.PREFERENCES_REFRESH_TOKEN, Constants.STRING_0);
+                                            MyFirebaseInstanceIDService fb = new MyFirebaseInstanceIDService();
+                                            if (refreshedToken == Constants.STRING_0) {
+                                                refreshedToken = fb.getToken(iduser);
+                                                editor.putString(Constants.PREFERENCES_REFRESH_TOKEN, refreshedToken);
+                                                editor.commit();
+                                            } else if (!refreshedToken.isEmpty() && iduser > 0) {
+                                                fb.sendRegistrationToServer(refreshedToken);
+                                            }
+
+
+                                            //Start activity Main
+                                            Intent intent = new Intent(Login.this, MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                        else {
+                                            message.setText(getString(R.string.fail));
+                                        }
+                                    }
+                                @Override
+                                public void onFailure(Call<UserMeta> call, Throwable t) {
+                                }
+                            });
+
+
                         } else {
                             message.setText(getString(R.string.fail_area));
                         }
@@ -186,6 +218,8 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         editor.putString(Constants.PREFERENCES_AREA_DELIVERY, idAreaDelivery);
         editor.putString(Constants.PREFERENCES_AREA_DELIVERY_STRING, strAreaDelivery);
         editor.putBoolean(Constants.PREFERENCES_IS_ORDER_CHANGED, false);
+        editor.putBoolean(Constants.PREFERENCES_USERMETA_ISUSERNEW, isUserNew);
+        editor.putString(Constants.PREFERENCES_USERMETA_DISTANCEMAX, distanceMax);
         editor.commit();
         return editor;
     }

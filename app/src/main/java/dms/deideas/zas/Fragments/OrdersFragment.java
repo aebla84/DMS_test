@@ -90,6 +90,8 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
     private Integer numMaxOrdersAccepted_BBDD;
     private String areadelivery = "";
     private Integer countListOrder = 0;
+    private Boolean is_user_new;
+    private String distanceMax;
 
 
     private class ObjOrderDataLocation {
@@ -140,6 +142,8 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
         areadelivery =  prefs.getString(Constants.PREFERENCES_AREA_DELIVERY, "");
         numberMaxOrdersVisible = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_VISIBLE, "");
         numMaxOrdersAccepted_BBDD = Integer.valueOf(prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, "0"));
+        is_user_new =  prefs.getBoolean(Constants.PREFERENCES_USERMETA_ISUSERNEW, false);
+        distanceMax =  prefs.getString(Constants.PREFERENCES_USERMETA_DISTANCEMAX, "");
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -204,6 +208,10 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
             case Constants.SERVICE_CODE_order_accepted_byareadelivery://rest_has_accepted + AREA
                 restHelperOrders = new RetrofitDelegateHelper(0, 0,areadelivery);
                 restHelperOrders.getOrdersByAreaDelivery(this);
+                break;
+            case Constants.SERVICE_CODE_order_accepted_byareadelivery_bymaxdistance://rest_has_accepted + AREA +  maxkilometers
+                restHelperOrders = new RetrofitDelegateHelper(0, 0,areadelivery,distanceMax);
+                restHelperOrders.getOrdersByAreaDeliveryByMaxDistance(this);
                 break;
             default:
                 restHelperOrders = new RetrofitDelegateHelper(0, 0,areadelivery);
@@ -481,30 +489,54 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
             e.printStackTrace();
         }
 
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        if(is_user_new)
+        {
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
 
-            @Override
-            public void run() {
-                // Indicates the service call
-                Globals g = Globals.getInstance();
-                // Get orders accepted
-                //g.setServiceCode(Constants.SERVICE_CODE_order_accepted);
-                g.setServiceCode(Constants.SERVICE_CODE_order_accepted_byareadelivery);
-                try {
-                    delegateHelper(g.getServiceCode());
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (InvalidKeyException e) {
-                    e.printStackTrace();
+                @Override
+                public void run() {
+                    // Indicates the service call
+                    Globals g = Globals.getInstance();
+                    // Get orders accepted
+                    g.setServiceCode(Constants.SERVICE_CODE_order_accepted_byareadelivery_bymaxdistance);
+                    try {
+                        delegateHelper(g.getServiceCode());
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    } catch (InvalidKeyException e) {
+                        e.printStackTrace();
+                    }
+
                 }
+            }, Constants.RESPONSE_TIME);
+        }
+        else{
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
 
-            }
-        }, Constants.RESPONSE_TIME);
+                @Override
+                public void run() {
+                    // Indicates the service call
+                    Globals g = Globals.getInstance();
+                    // Get orders accepted
+                    //g.setServiceCode(Constants.SERVICE_CODE_order_accepted);
+                    g.setServiceCode(Constants.SERVICE_CODE_order_accepted_byareadelivery);
+                    try {
+                        delegateHelper(g.getServiceCode());
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    } catch (InvalidKeyException e) {
+                        e.printStackTrace();
+                    }
 
-
+                }
+            }, Constants.RESPONSE_TIME);
+        }
     }
 
     private void addAdapter(OrderSearch body){

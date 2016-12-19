@@ -37,6 +37,8 @@ public class Constants {
     public static final int SERVICE_CODE_order_byidorder = 23;
     public static final int SERVICE_CODE_order_saveLocation = 25;
     public static final int SERVICE_CODE_configuratorweb = 26;
+    public static final int SERVICE_CODE_order_accepted_byareadelivery_bymaxdistance = 27;
+    public static final int SERVICE_CODE_order_count_byuser_byareadelivery_bymaxdistance = 28;
 
     public static final int PROBLEM_drop_food = 0;
     public static final int PROBLEM_wrong_plate = 1;
@@ -113,6 +115,8 @@ public class Constants {
     public static final String PREFERENCES_NUMBERS_ORDERS_ACCEPTED= "numMyOrders";
     public static final String PREFERENCES_NUMBERS_ORDERS_ACCEPTEDBYDRIVER= "numMyOrdersWithouProblems";
     public static final String PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY= "timeMax";
+    public static final String PREFERENCES_USERMETA_DISTANCEMAX= "distanceMax";
+    public static final String PREFERENCES_USERMETA_ISUSERNEW= "isUserNew";
 
     public static final int HOMEFRAGMENT_CODE = 0;
     public static final int ORDERSFRAGMENT_CODE = 1;

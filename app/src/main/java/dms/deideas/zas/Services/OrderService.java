@@ -169,4 +169,25 @@ public interface OrderService {
                                     @Query("oauth_signature_method") String oauth_signature_method,
                                     @Query("oauth_timestamp") String oauth_timestamp);
 
+
+    // ServiceCode = 27;
+    @GET("wc-api/v2/orders/accepted_byareadelivery_bymaxdistance/{area}/{kilometers}")
+    Call<OrderSearch> listorders_byarea_bymaxkilometers(@Path("area")String strArea,
+                                                       @Path("kilometers") String strKilometers,
+                                                       @Query("oauth_consumer_key") String oauth_consumer_key,
+                                                       @Query("oauth_nonce") String oauth_nonce,
+                                                       @Query("oauth_signature") String oauth_signature,
+                                                       @Query("oauth_signature_method") String oauth_signature_method,
+                                                       @Query("oauth_timestamp") String oauth_timestamp);
+
+    // ServiceCode = 28;
+    @GET("wc-api/v2/orders/count_byuserbyareadelivery_bymaxkilometers/{id}/{area}/{kilometers}")
+    Call<HomeResponse> countOrders_tohomepage_byusernew(@Path("id") int id,
+                                              @Path("area") String strArea,
+                                              @Path("kilometers") String strKilometers,
+                                              @Query("oauth_consumer_key") String oauth_consumer_key,
+                                              @Query("oauth_nonce") String oauth_nonce,
+                                              @Query("oauth_signature") String oauth_signature,
+                                              @Query("oauth_signature_method") String oauth_signature_method,
+                                              @Query("oauth_timestamp") String oauth_timestamp);
 }

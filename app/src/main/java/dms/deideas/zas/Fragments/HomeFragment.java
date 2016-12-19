@@ -70,6 +70,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Retro
     private ProgressDialog progress;
     private Integer idUser;
     private String areadelivery;
+    private Boolean is_user_new;
+    private String distanceMax;
     private SharedPreferences prefs;
     //endregion
 
@@ -107,6 +109,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Retro
         int_numOrders = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS, 0);
         int_numMyOrders = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS_ACCEPTED, 0);
         areadelivery =  prefs.getString(Constants.PREFERENCES_AREA_DELIVERY, "");
+        is_user_new =  prefs.getBoolean(Constants.PREFERENCES_USERMETA_ISUSERNEW, false);
+        distanceMax =  prefs.getString(Constants.PREFERENCES_USERMETA_DISTANCEMAX, "");
     }
 
     private void setUpView(View view) {
@@ -175,10 +179,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Retro
         //region Call getCountOrders
         Retrofit retrofit;
         Globals g = Globals.getInstance();
-
         try {
-            g.setServiceCode(Constants.SERVICE_CODE_order_count_byuser_byareadelivery);
-            restHelper = new RetrofitDelegateHelper(0, idUser,areadelivery);
+            if(is_user_new)
+            {
+                g.setServiceCode(Constants.SERVICE_CODE_order_count_byuser_byareadelivery_bymaxdistance);
+                restHelper = new RetrofitDelegateHelper(0, idUser,areadelivery,distanceMax);
+            }
+            else{
+                g.setServiceCode(Constants.SERVICE_CODE_order_count_byuser_byareadelivery);
+                restHelper = new RetrofitDelegateHelper(0, idUser,areadelivery);
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
@@ -186,7 +196,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Retro
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
-        restHelper.getCountOrders(this);
+        if(is_user_new)
+        {
+            restHelper.getCountOrdersByUserNew(this);
+        }
+        else
+        {
+            restHelper.getCountOrders(this);
+        }
+
 
         //endregion
 
