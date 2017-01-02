@@ -164,12 +164,15 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
 
                                             //Save idUser and Token in BBDD
                                             String refreshedToken = prefs.getString(Constants.PREFERENCES_REFRESH_TOKEN, Constants.STRING_0);
+                                            Integer int_idUser = prefs.getInt(Constants.PREFERENCES_USER_ID, 0);
                                             MyFirebaseInstanceIDService fb = new MyFirebaseInstanceIDService();
                                             if (refreshedToken == Constants.STRING_0) {
                                                 refreshedToken = fb.getToken(iduser);
                                                 editor.putString(Constants.PREFERENCES_REFRESH_TOKEN, refreshedToken);
                                                 editor.commit();
                                             } else if (!refreshedToken.isEmpty() && iduser > 0) {
+                                                editor.putInt(Constants.PREFERENCES_USER_ID,iduser);
+                                                editor.commit();
                                                 fb.sendRegistrationToServer(refreshedToken);
                                             }
 

@@ -70,11 +70,11 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
     private String title, phone,prevpage_title,originPage;
     private Integer idUser;
 
-    private TextView id_order, restaurant_name, time_left_of_order, restaurant_direction, tv_phone_restaurant, customer_name, hour_order, payment_total, commentsCount, problemsCount, customer_direction;
+    private TextView id_order, restaurant_name, time_left_of_order, restaurant_direction, tv_phone_restaurant, customer_name, hour_order, payment_total, commentsCount, problemsCount,problemsMotodriver, customer_direction;
     private ImageView phone_restaurant, phone_customer, imgpointClock, imgLocationFail;
     private TextView tv_phone_customer, state_of_payment, comments, incidents;
     private Button accept, disallocate, saveLocation, savePhone, btnincidencia;
-    private RelativeLayout dtorder_problems, warningLayout;
+    private RelativeLayout dtorder_problems,dtorder_problems2, warningLayout;
     private List<OrderNote> lstcomments;
     private List<Incidencia> lstproblems;
     private ProgressDialog progress;
@@ -85,7 +85,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
 
     private String questionStatus = "";
 
-    private ImageView icRestaurantWhite,icRestaurantRed,icMotoWhite,icRecogidoWhite,icRecogidoRed,icIncidenceRed,icIncidenceWhite,icFinishedWhite,icFinishedRed,icFinishedIncidenceRed,icFinishedIncidenceWhite,imgBigOrder,imgDrinks;
+    private ImageView icRestaurantWhite,icRestaurantRed,icMotoWhite,icRecogidoWhite,icRecogidoRed,icIncidenceRed,icIncidenceWhite,icFinishedWhite,icFinishedRed,icFinishedIncidenceRed,icFinishedIncidenceWhite,imgBigOrder,imgDrinks,imgDessert;
     private TextView txtRestaurantWhite,txtRestaurantRed,txtMotoWhite,txtRecogidoWhite,txtRecogidoRed,txtIncidenceRed,txtIncidenceWhite, txtFinishedWhite,txtFinishedRed,txtFinishedIncidenceRed,txtFinishedIncidenceWhite;
 
     private RetrofitDelegateHelper restHelper;
@@ -151,15 +151,12 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
 
     private void setValues() {
 
-        //id_order.setText(String.valueOf(order.getId()));
         payment_total.setText(String.valueOf(order.getTotal()) + " €");
         restaurant_name.setText(order.getRestaurant().getName());
         restaurant_direction.setText(order.getRestaurant().getStreet());
         customer_name.setText(order.getBilling_address().getFirst_name() + " " + order.getBilling_address().getLast_name());
         hour_order.setText(order.getCreated_at().substring(11, 16) + "h");
-        //hour_order_rest_accepted.setText(order.getTime_rest_accepted().substring(11, 16) + "h");
         time_left_of_order.setText(order.getTimeKitchen() + " min");
-        //hour_order_title.setText(order.getCreated_at().substring(11, 16) + "h");
         if(order.getShipping_address().getIndications().length() > 0)
         {
             customer_direction.setText(order.getShipping_address().getAddress_1() + " " + order.getShipping_address().getAddress_2() + " (" + order.getShipping_address().getIndications() +") ");
@@ -168,19 +165,19 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
             customer_direction.setText(order.getShipping_address().getAddress_1() + " " + order.getShipping_address().getAddress_2());
         }
 
-        if (order.getPayment_details().getMethod_title().contentEquals(getContext().getResources().getString(R.string.paid_home)) && order.getPayment_details().getPaid() == false) {
+        if (order.getPayment_details().getMethod_id().contentEquals("cod") && order.getPayment_details().getPaid() == false) {
             state_of_payment.setText(R.string.cash_payment);
+
         } else {
             state_of_payment.setText(R.string.online_payment);
         }
 
         tv_phone_restaurant.setText(String.valueOf(order.getRestaurant().getPhone()));
         tv_phone_customer.setText(String.valueOf(order.getBilling_address().getPhone()));
-
-        if(order.getLista_incidencias() != null)
+        if(order.getLista_incidencias() != null) {
             problemsCount.setText(String.valueOf(order.getLista_incidencias().size()));
-
-        //countCommentsAndProblems();
+            problemsMotodriver.setText(String.valueOf(order.getMotodriver_problem_name()));
+        }
 
     }
 
@@ -206,6 +203,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
         incidents = (TextView) view.findViewById(R.id.incidents);
         commentsCount = (TextView) view.findViewById(R.id.commentsCount);
         problemsCount = (TextView) view.findViewById(R.id.problemsCount);
+        problemsMotodriver = (TextView) view.findViewById(R.id.incident_moto_name);
         accept = (Button) view.findViewById(R.id.accept);
         disallocate = (Button) view.findViewById(R.id.disallocate);
         btnincidencia = (Button) view.findViewById(R.id.btnincidencia);
@@ -236,6 +234,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
         icFinishedIncidenceWhite = (ImageView) view.findViewById(R.id.icFinishedIncidenceWhite);
         txtFinishedIncidenceWhite = (TextView) view.findViewById(R.id.txtFinishedIncidenceWhite);
         dtorder_problems = (RelativeLayout) view.findViewById(R.id.relLay_dtorder_problems);
+        dtorder_problems2 = (RelativeLayout) view.findViewById(R.id.relLay_dtorder_problems2);
         warningLayout = (RelativeLayout) view.findViewById(R.id.warningLayout);
 
         saveLocation = (Button) view.findViewById(R.id.saveLocation);
@@ -243,6 +242,7 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
 
         imgBigOrder = (ImageView) view.findViewById(R.id.imgBigOrder);
         imgDrinks = (ImageView) view.findViewById(R.id.imgDrink);
+        imgDessert = (ImageView) view.findViewById(R.id.imgDrink2);
     }
 
     private void setOnClickListener() {
@@ -279,36 +279,44 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
                 btnincidencia.setVisibility(View.VISIBLE);
                 payment_total.setVisibility(View.VISIBLE);
                 disallocate.setVisibility(View.INVISIBLE);
+                time_left_of_order.setVisibility(View.INVISIBLE);
                 break;
             case Constants.ORDER_STATUS_problem:
                 btnincidencia.setVisibility(View.VISIBLE);
                 payment_total.setVisibility(View.VISIBLE);
                 disallocate.setVisibility(View.VISIBLE);
+                time_left_of_order.setVisibility(View.INVISIBLE);
+
                 break;
             case Constants.ORDER_STATUS_order_delivered:
                 btnincidencia.setVisibility(View.VISIBLE);
                 accept.setVisibility(View.INVISIBLE);
                 payment_total.setVisibility(View.VISIBLE);
                 disallocate.setVisibility(View.INVISIBLE);
+                time_left_of_order.setVisibility(View.INVISIBLE);
             case Constants.ORDER_STATUS_order_delivered_w_problem:
                 btnincidencia.setVisibility(View.VISIBLE);
                 payment_total.setVisibility(View.VISIBLE);
                 disallocate.setVisibility(View.INVISIBLE);
+                time_left_of_order.setVisibility(View.INVISIBLE);
             default:
                 break;
         }
         ArrayList<Incidencia> lstIncidencias = (ArrayList<Incidencia>) order.getLista_incidencias();
         if (lstIncidencias != null && lstIncidencias.size() > 0) {
             dtorder_problems.setVisibility(View.VISIBLE);
+            dtorder_problems2.setVisibility(View.VISIBLE);
         } else {
             dtorder_problems.setVisibility(View.GONE);
+            dtorder_problems2.setVisibility(View.GONE);
         }
         order_status_visibility_and_settext();
 
-        if(order.getShipping_address().getIs_wrong_location().equals("1")){
+        if(order.getShipping_address().getData_map() == null || order.getShipping_address().getData_map().equals("")){
             imgLocationFail.setVisibility(View.VISIBLE);
         } else {imgLocationFail.setVisibility(View.INVISIBLE);
         }
+
 
         if(order.getOrder_big()){
             warningLayout.setVisibility(View.VISIBLE);
@@ -320,7 +328,11 @@ public class DetailMyOrderFragment extends Fragment implements View.OnClickListe
             imgDrinks.setVisibility(View.VISIBLE);
         } else {imgDrinks.setVisibility(View.INVISIBLE);
         }
-
+        if(order.getOrder_has_dessert()){
+            warningLayout.setVisibility(View.VISIBLE);
+            imgDessert.setVisibility(View.VISIBLE);
+        } else {imgDessert.setVisibility(View.INVISIBLE);
+        }
     }
 
     //Set text for button to change status and set the question that ask you the dialog

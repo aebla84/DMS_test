@@ -37,6 +37,10 @@ public class Order implements Serializable {
     private String orderstatus;
     @SerializedName("motodriver")
     private String motodriver;
+    @SerializedName("motodriver_problem")
+    private String motodriver_problem;
+    @SerializedName("motodriver_problem_name")
+    private String motodriver_problem_name;
     @SerializedName("note")
     private String note;
     @SerializedName("minutesMotoDriverPickupInRestaurant")
@@ -57,7 +61,12 @@ public class Order implements Serializable {
     private String shipping_latlong;
     @SerializedName("order_has_drinks")
     private Boolean order_has_drinks;
-
+    @SerializedName("order_has_dessert")
+    private Boolean order_has_dessert;
+    @SerializedName("minutesDriverInRestaurant")
+    private int minutesDriverInRestaurant;
+    @SerializedName("minutesOrderWithProblem")
+    private int minutesOrderWithProblem;
     public Order() {
     }
 
@@ -108,6 +117,14 @@ public class Order implements Serializable {
     public void setMotodriver(String motodriver) {
         this.motodriver = motodriver;
     }
+
+    public String getMotodriver_problem() {return motodriver_problem; }
+
+    public void setMotodriver_problem(String motodriver_problem) {this.motodriver_problem = motodriver_problem; }
+
+    public String getMotodriver_problem_name() {return motodriver_problem_name; }
+
+    public void setMotodriver_problem_name(String motodriver_problem_name) { this.motodriver_problem_name = motodriver_problem_name; }
 
     public Restaurant getRestaurant() {
         return restaurant;
@@ -247,4 +264,28 @@ public class Order implements Serializable {
     public void setOrder_has_drinks(Boolean order_has_drinks) {
         this.order_has_drinks = order_has_drinks;
     }
+
+    public Boolean getOrder_has_dessert() {
+        return order_has_dessert;
+    }
+
+    public void setOrder_has_dessert(Boolean order_has_dessert) {
+        this.order_has_dessert = order_has_dessert;
+    }
+
+    public int getMinutesDriverInRestaurant() {
+        return minutesDriverInRestaurant;
+    }
+
+    public void setMinutesDriverInRestaurant(int minutesDriverInRestaurant) {
+        this.minutesDriverInRestaurant = minutesDriverInRestaurant;
+    }
+    public int getMinutesOrderWithProblem() {
+        return minutesOrderWithProblem;
+    }
+
+    public void setMinutesOrderWithProblem(int minutesOrderWithProblem) {
+        this.minutesOrderWithProblem = minutesOrderWithProblem;
+    }
+
 }

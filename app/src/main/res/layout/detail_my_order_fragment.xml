@@ -590,7 +590,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="53dp"
+                android:layout_height="wrap_content"
                 android:background="@color/colorAccent"
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/detail_paddingLeft"
@@ -659,13 +659,23 @@
                         android:layout_alignParentBottom="true" />
 
                     <ImageView
+                        tool:srcCompat="@drawable/ic_dessert"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imgDrink2"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toRightOf="@+id/imgDrink"
+                        android:layout_toEndOf="@+id/imgDrink" />
+
+                    <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tool:srcCompat="@drawable/ic_big3_40dp"
                         android:id="@+id/imgBigOrder"
                         android:layout_alignParentTop="true"
-                        android:layout_toRightOf="@+id/imgDrink"
-                        android:layout_toEndOf="@+id/imgDrink" />
+                        android:layout_toRightOf="@+id/imgDrink2"
+                        android:layout_toEndOf="@+id/imgDrink2" />
                 </RelativeLayout>
 
 
@@ -791,7 +801,47 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/card_paddingBottom" />
+            <RelativeLayout
+                android:id="@+id/relLay_dtorder_problems2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:orientation="vertical"
+                android:longClickable="true">
 
+
+                <TextView
+                    android:id="@+id/incident_moto_text"
+                    style="@style/secondTitleAvenirFont"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="false"
+                    android:paddingBottom="@dimen/detail_paddingBottom"
+                    android:paddingRight="@dimen/detail_paddingRight"
+                    android:paddingTop="@dimen/detail_paddingTop"
+                    android:paddingLeft="@dimen/detail_paddingLeft"
+                    android:text="@string/customer_incident_motodriver" />
+
+                <TextView
+                    style="@style/secondTitleAvenirFont"
+                    android:id="@+id/incident_moto_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/incident_moto_text"
+                    android:paddingBottom="@dimen/detail_paddingBottom"
+                    android:paddingRight="@dimen/detail_paddingRight"
+                    android:paddingTop="@dimen/detail_paddingTop" />
+
+
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/blockExtra3_2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/card_paddingBottom" />
             <RelativeLayout
                 android:id="@+id/blockExtra4"
                 android:layout_width="match_parent"

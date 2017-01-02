@@ -7,11 +7,22 @@ import java.io.Serializable;
  */
 public class Payment implements Serializable {
 
+
+
+    private String method_id;
     private String method_title;
     private Boolean paid;
 
     public Payment() {
 
+    }
+
+    public String getMethod_id() {
+        return method_id;
+    }
+
+    public void setMethod_id(String method_id) {
+        this.method_id = method_id;
     }
 
     public String getMethod_title() {

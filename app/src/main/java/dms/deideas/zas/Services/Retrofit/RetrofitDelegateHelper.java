@@ -666,16 +666,20 @@ public class RetrofitDelegateHelper {
                     oauth_signature_method, oauth_timestamp).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    Log.d("URL 3_POST: ", response.raw().request().url().toString());
-                    Log.d("CODE_POST: ", String.valueOf(response.code()));
-                    SharedPreferences.Editor editor = prefs.edit();
-                    if(newStatus.equals(Constants.ORDER_STATUS_order_delivered))
-                    {
-                        //Update numMyOrdersWithouProblems  in preferences on App.
-                        inumMyOrdersWithoutProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
-                        inumMyOrdersWithoutProblems = inumMyOrdersWithoutProblems - 1;
-                        editor.putInt("numMyOrdersWithouProblems",inumMyOrdersWithoutProblems);
-                        editor.commit();
+                    if (response.isSuccessful()) {
+                        Log.d("URL 3_POST: ", response.raw().request().url().toString());
+                        Log.d("CODE_POST: ", String.valueOf(response.code()));
+                        SharedPreferences.Editor editor = prefs.edit();
+                        if (newStatus.equals(Constants.ORDER_STATUS_order_delivered)) {
+                            //Update numMyOrdersWithouProblems  in preferences on App.
+                            inumMyOrdersWithoutProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
+                            inumMyOrdersWithoutProblems = inumMyOrdersWithoutProblems - 1;
+                            editor.putInt("numMyOrdersWithouProblems", inumMyOrdersWithoutProblems);
+                            editor.commit();
+                        }
+                    }
+                    else{
+                        Log.d("error: ", String.valueOf(response.errorBody()));
                     }
                 }
 
@@ -1147,6 +1151,7 @@ public class RetrofitDelegateHelper {
         void orderReceived(OrderUpdate order);
 
         void notMaxTime ();
+
     }
 
     public interface WebConfigurationDelegate {
@@ -1178,12 +1183,12 @@ public class RetrofitDelegateHelper {
     }
     public interface homeResponse {
         void response(HomeResponse body);
-        void closedialog( );
+        void closedialog();
     }
-
 
     public interface response{
         void hascreatecomment(Boolean bResult);
     }
+
     //endregion
 }

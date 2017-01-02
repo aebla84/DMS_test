@@ -73,11 +73,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         }
 
         //region The state of payment change depending of payment details of order.
-        if(!strOrderStatus.equals(Constants.ORDER_STATUS_rest_has_accepted) && !strOrderStatus.equals(Constants.ORDER_STATUS_problem)){
-            if (orders.get(position).getPayment_details().getMethod_title().contentEquals(String.valueOf(R.string.paid_home)) && orders.get(position).getPayment_details().getPaid() == false) {
-                holder.state_of_payment.setText(String.valueOf((orders.get(position).getTotal()) + " " + R.string.euro_Symbol));
+        if(!strOrderStatus.equals(Constants.ORDER_STATUS_rest_has_accepted) && !strOrderStatus.equals(Constants.ORDER_STATUS_problem) && !strOrderStatus.equals(Constants.ORDER_STATUS_driver_has_accepted) ){
+            if (orders.get(position).getPayment_details().getMethod_id().contentEquals("cod") && orders.get(position).getPayment_details().getPaid() == false) {
+                //holder.state_of_payment.setText(String.valueOf((orders.get(position).getTotal()) + " " + R.string.euro_Symbol));
+                holder.state_of_payment.setText(String.valueOf((orders.get(position).getTotal()) + " €"));
                 holder.state_of_payment.setVisibility(View.VISIBLE);
-
             } else {
                 holder.state_of_payment.setText(R.string.paid_online);
                 holder.state_of_payment.setVisibility(View.VISIBLE);
@@ -112,6 +112,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                             break;
                     }
                 }
+                holder.hourKitchen.setText(orders.get(position).getMinutesOrderWithProblem() + " min");
+
                 break;
             case Constants.ORDER_STATUS_rest_has_accepted:
             case Constants.ORDER_STATUS_driver_has_accepted:
@@ -133,6 +135,26 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 if (orders.get(position).getTimeKitchen() != null) {
                     holder.hourKitchen.setText(orders.get(position).getTimeKitchen() + " min");
                 }
+                break;
+            case Constants.ORDER_STATUS_driver_in_rest:
+                if (orders.get(position).getRestaurant_foodpriority().equals(Constants.ORDER_FOODPRIORITY_HIGHT) ||((orders.get(position).getMinutesDriverOnRoad()) >= Integer.valueOf(timeMax)) ) {
+                    holder.block1.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.black));
+                    holder.txtOrder.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                    holder.idorder.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                } else if (orders.get(position).getRestaurant_foodpriority().equals(Constants.ORDER_FOODPRIORITY_MEDIUM)) {
+                    holder.block1.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.yellow));
+                    holder.txtOrder.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.colorAccent));
+                    holder.idorder.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.colorAccent));
+                } else if (orders.get(position).getRestaurant_foodpriority().equals(Constants.ORDER_FOODPRIORITY_LOW)) {
+                    holder.block1.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.green));
+                } else {
+                    holder.block1.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.white));
+                    holder.txtOrder.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.colorAccent));
+                    holder.idorder.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.colorAccent));
+                }
+
+                holder.hourKitchen.setText(orders.get(position).getMinutesDriverInRestaurant() + " min");
+
                 break;
             case Constants.ORDER_STATUS_driver_on_road:
                 if (orders.get(position).getRestaurant_foodpriority().equals(Constants.ORDER_FOODPRIORITY_HIGHT) ||((orders.get(position).getMinutesDriverOnRoad()) >= Integer.valueOf(timeMax)) ) {
@@ -158,6 +180,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 holder.block1.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.white));
                 holder.txtOrder.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.colorAccent));
                 holder.idorder.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.colorAccent));
+                holder.hourKitchen.setText(" -- ");
                 break;
 
         }
@@ -174,11 +197,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         notifyDataSetChanged();
     }
 
+
     public int getOrdersCount() {
         if(countOrders!= null)
         return countOrders;
         else{return orders.size();}
     }
+
 
     @Override
     public void onClick(View v) {
@@ -275,5 +300,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     public void replace(List<Order> elements) {
         orders.clear();
         add(elements);
+        notifyDataSetChanged();
     }
 }

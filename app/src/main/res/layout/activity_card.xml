@@ -109,7 +109,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:text="20min"
                 android:visibility="visible"/>
 
         </RelativeLayout>

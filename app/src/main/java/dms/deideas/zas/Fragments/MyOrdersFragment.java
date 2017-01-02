@@ -67,7 +67,6 @@ public class MyOrdersFragment extends Fragment implements View.OnClickListener, 
     private View view;
 
     public MyOrdersFragment() {
-
     }
 
     public static MyOrdersFragment newInstance(String title, String motodriver) {
@@ -85,39 +84,12 @@ public class MyOrdersFragment extends Fragment implements View.OnClickListener, 
     private void readPreferences(){
         prefs = getActivity().getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         idUser = prefs.getInt(Constants.PREFERENCES_USER_ID, 0);
-        int_numOrders = prefs.getInt("numOrders", 0);
-        int_numMyOrders = prefs.getInt("numMyOrders", 0);
-        inumMyOrdersWithouProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
+        int_numOrders = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS, 0);
+        int_numMyOrders = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS_ACCEPTED, 0);
+        inumMyOrdersWithouProblems = prefs.getInt(Constants.PREFERENCES_NUMBERS_ORDERS_ACCEPTEDBYDRIVER, 0);
         areadelivery = prefs.getString(Constants.PREFERENCES_AREA_DELIVERY, "");
         isOrderChanged = prefs.getBoolean(Constants.PREFERENCES_IS_ORDER_CHANGED, false);
-        timeMax = prefs.getString("timeMax", "0");
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.my_orders_fragment, container, false);
-
-        ((MainActivity) getActivity()).setTitle(getArguments().getString("title"));
-
-
-        countOrders = (TextView) view.findViewById(R.id.numOrders);
-        if (countOrders != null) {
-            countOrders.setText(String.valueOf(adapter.getOrdersCount()));
-        }
-        numTotalOrders = 0;
-
-       // loadlistOrders();
-
-        recycler = (RecyclerView) view.findViewById(R.id.recycle);
-        recycler.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recycler.setAdapter(adapter);
-        recycler.setHasFixedSize(true);
-
-        Globals g = Globals.getInstance();
-        g.setIdFragment(Constants.HOMEFRAGMENT_CODE);
-
-        return view;
+        timeMax = prefs.getString(Constants.PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY, "0");
     }
 
     @Override
@@ -128,7 +100,33 @@ public class MyOrdersFragment extends Fragment implements View.OnClickListener, 
         motodriver = getArguments().getString("motodriver");
 
         adapter = new OrderAdapter(this,timeMax);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.my_orders_fragment, container, false);
+        ((MainActivity) getActivity()).setTitle(getArguments().getString("title"));
+
+        countOrders = (TextView) view.findViewById(R.id.numOrders);
+        if (countOrders != null) {
+            countOrders.setText(String.valueOf(adapter.getOrdersCount()));
+        }
+        numTotalOrders = 0;
+        countListOrder = 0;
+
         loadlistOrders();
+
+        recycler = (RecyclerView) view.findViewById(R.id.recycle);
+        recycler.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recycler.setAdapter(adapter);
+        recycler.getAdapter().notifyDataSetChanged();
+        recycler.setHasFixedSize(true);
+
+        Globals g = Globals.getInstance();
+        g.setIdFragment(Constants.HOMEFRAGMENT_CODE);
+
+        return view;
     }
 
 
@@ -141,8 +139,6 @@ public class MyOrdersFragment extends Fragment implements View.OnClickListener, 
     }
 
     public void loadlistOrders() {
-        /*progress = ProgressDialog.show(getContext(), null, "Cargando", false, false);
-        progress.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));*/
 
         progress = new ProgressDialog(getContext());
         progress.show();
@@ -250,6 +246,8 @@ public class MyOrdersFragment extends Fragment implements View.OnClickListener, 
 
         if (body != null) {
             adapter.add(body.getOrders());
+            adapter.notifyDataSetChanged();
+            recycler.getAdapter().notifyDataSetChanged();
         }
         numTotalOrders =numTotalOrders+ body.getCountOrders();
         countOrders.setText(String.valueOf(numTotalOrders));
@@ -266,11 +264,8 @@ public class MyOrdersFragment extends Fragment implements View.OnClickListener, 
         if ( countListOrder == 2)
             if (progress != null && countListOrder == 2)
                 progress.dismiss();
-       /* recycler = (RecyclerView) view.findViewById(R.id.recycle);
-        recycler.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recycler.setAdapter(adapter);
-        recycler.setHasFixedSize(true);*/
     }
+
 
     @Override
     public void arrayRecibido(ArrayList<String> body) {

@@ -74,6 +74,7 @@
     <string name="state_of_payment">Estado del pago</string>
     <string name="customer_observation">Comentarios </string>
     <string name="customer_incident">Incidencias</string>
+    <string name="customer_incident_motodriver">Motorista Incidencia</string>
     <string name="comment_motodriver">COMENTARIOS REPARTIDOR:</string>
     <string name="btn_accept">Aceptar</string>
     <string name="btn_cancel">Cancelar</string>

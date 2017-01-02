@@ -1,5 +1,7 @@
 package dms.deideas.zas.Push;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -26,6 +28,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     DevicesService device_service;
     Devices dv = new Devices();
     String token = "";
+
     /**
      * Called if InstanceID token is updated. This may occur if the security of
      * the previous token had been compromised. Note that this is called when the InstanceID token
@@ -34,6 +37,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     // [START refresh_token]
     @Override
     public void onTokenRefresh() {
+
         // Get updated InstanceID token.
         refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG.concat(" refreshedToken"), refreshedToken);
@@ -69,49 +73,53 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      * @param strToken The new token.
      */
     public void sendRegistrationToServer(String strToken) {
-        // Implement this method to send token to your app server.
+        if(idUser_service == 0 ){
+            SharedPreferences prefs = getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+            Integer int_IdUser = prefs.getInt(Constants.PREFERENCES_USER_ID, 0);
+            idUser_service = int_IdUser;
+        }
 
-        retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.URL_ZAS)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+            // Implement this method to send token to your app server.
 
-        device_service = retrofit.create(DevicesService.class);
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(Constants.URL_ZAS)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-        dv.setUser_id(idUser_service);
-        token = strToken;
-        dv.setRegistration_id(token);
+            device_service = retrofit.create(DevicesService.class);
 
-        //Check if devices is in BBDD or not
+            dv.setUser_id(idUser_service);
+            token = strToken;
+            dv.setRegistration_id(token);
 
-        device_service.getDevices_push(idUser_service).enqueue(
-                new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        if (response.isSuccessful()) {
-                            if (response.body() != null) {
-                                if (Integer.valueOf(response.body()) > 0) {
-                                   updateDevices(token);
+            //Check if devices is in BBDD or not
+
+            device_service.getDevices_push(idUser_service).enqueue(
+                    new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if (response.isSuccessful()) {
+                                if (response.body() != null) {
+                                    if (Integer.valueOf(response.body()) > 0) {
+                                        updateDevices(token);
+                                    } else {
+                                        insertDevices(token);
+                                    }
                                 } else {
-                                  insertDevices(token);
+                                    Log.d(TAG, "getDevices_push -  Error en response ");
                                 }
                             } else {
-                                Log.d(TAG, "getDevices_push -  Error en response ");
+                                Log.d(TAG, "getDevices_push - Error en response");
                             }
                         }
-                        else {
-                            Log.d(TAG, "getDevices_push - Error en response");
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            updateDevices(token);
+                            Log.d(TAG, "getDevices_push - onFailure");
                         }
                     }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-                        updateDevices(token);
-                        Log.d(TAG, "getDevices_push - onFailure");
-                    }
-                }
-        );
-
+            );
 
     }
 
