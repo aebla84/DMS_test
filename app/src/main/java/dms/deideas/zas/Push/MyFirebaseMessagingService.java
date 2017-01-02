@@ -42,6 +42,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendNotification(String messageTitle, String messageBody) {
 
         messageTitle = (messageTitle != "") ? messageTitle: "Notificación";
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Intent intent = new Intent(this, MainActivity.class);
         // use System.currentTimeMillis() to have a unique ID for the pending intent
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
@@ -50,20 +51,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Notification n  = new Notification.Builder(this)
                     .setContentTitle(messageTitle)
                     .setContentText(messageBody)
-                    .setSmallIcon(R.drawable.ic_pedidos_iconorestaurante)
                     .setContentIntent(pIntent)
+                    .setDefaults(Notification.DEFAULT_SOUND)
+                    .setSmallIcon(R.drawable.ic_logo_3)
                     .setAutoCancel(true).getNotification();
             NotificationManager notificationManager =
                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(0, n);
         } else {
-            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_pedidos_iconorestaurante);
-            Notification n  = new Notification.Builder(this)
-                    .setContentTitle("Firebase Push Notification")
+            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_logo_3);
+            Notification n  = new Notification.Builder(this).setSmallIcon(R.drawable.ic_pedidos_iconorestaurante).setSmallIcon(R.drawable.ic_pedidos_iconorestaurante).setSmallIcon(R.drawable.ic_pedidos_iconorestaurante)
+                    .setContentTitle("Nuevo pedido")
                     .setContentText(messageBody)
-                    .setSmallIcon(R.drawable.ic_pedidos_iconorestaurante)
+                    .setSmallIcon(R.drawable.ic_logo_3)
                     .setLargeIcon(bm)
                     .setContentIntent(pIntent)
+                    .setSound(defaultSoundUri)
+                    //.setDefaults(Notification.DEFAULT_SOUND)
                     .setAutoCancel(true).build();
 
             NotificationManager notificationManager =
