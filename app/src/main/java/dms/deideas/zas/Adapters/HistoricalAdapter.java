@@ -51,7 +51,7 @@ public class HistoricalAdapter extends RecyclerView.Adapter<HistoricalAdapter.Hi
     public void onBindViewHolder(HistoricalAdapter.HistoricalViewHolder holder, int position) {
         holder.card.setTag(position);
         holder.idorder.setText(String.valueOf(orders.get(position).getId()));
-        holder.date.setText(convertFormatDate(orders.get(position).getCompleted_at()));
+        holder.date.setText(convertFormatDate(orders.get(position).getCreated_at()));
         holder.money.setText(orders.get(position).getTotal());
     }
 
