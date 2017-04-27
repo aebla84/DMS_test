@@ -101,6 +101,9 @@ public class Constants {
     public static final String PREFERENCES_NAME = "MyPreferences";
     public static final String PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER = "numberMax";
     public static final String PREFERENCES_NUMBER_MAX_ORDERS_VISIBLE = "numberMaxOrdersVisible";
+    public static final String PREFERENCES_NUMBER_MAX_ORDER_TYPE_LOW = "numberMaxOrdersTypeLow";
+    public static final String PREFERENCES_NUMBER_MAX_ORDER_TYPE_MID = "numberMaxOrdersTypeMid";
+    public static final String PREFERENCES_NUMBER_MAX_ORDER_TYPE_TOP = "numberMaxOrdersTypeTop";
     public static final String PREFERENCES_REFRESH_TOKEN = "refreshedToken";
     public static final String PREFERENCES_USER_ID = "idUser";
     public static final String PREFERENCES_USER_DISPLAYNAME = "name";
@@ -117,6 +120,7 @@ public class Constants {
     public static final String PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY= "timeMax";
     public static final String PREFERENCES_USERMETA_DISTANCEMAX= "distanceMax";
     public static final String PREFERENCES_USERMETA_ISUSERNEW= "isUserNew";
+    public static final String PREFERENCES_USERMETA_DRIVER_LEVEL = "";
 
     public static final int HOMEFRAGMENT_CODE = 0;
     public static final int ORDERSFRAGMENT_CODE = 1;

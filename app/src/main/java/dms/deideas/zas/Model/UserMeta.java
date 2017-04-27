@@ -13,7 +13,8 @@ public class UserMeta implements Serializable {
 
     private String is_driver_new;
     private String maxdistance;
-
+    private String driver_level;
+    private String max_orders_accepted;
 
     public String getIs_driver_new() {
         return is_driver_new;
@@ -29,5 +30,21 @@ public class UserMeta implements Serializable {
 
     public void setMaxdistance(String maxdistance) {
         this.maxdistance = maxdistance;
+    }
+
+    public String getType() {
+        return driver_level;
+    }
+
+    public void setType(String type) {
+        this.driver_level = type;
+    }
+
+    public String getMax_orders_accepted() {
+        return max_orders_accepted;
+    }
+
+    public void setMax_orders_accepted(String max_orders_accepted) {
+        this.max_orders_accepted = max_orders_accepted;
     }
 }

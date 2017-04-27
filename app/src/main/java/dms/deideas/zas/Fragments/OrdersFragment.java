@@ -87,6 +87,9 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
     private Integer int_numMyOrders = 0;
     private Integer inumMyOrdersWithouProblems = 0;
     private String numberMaxOrdersVisible = "";
+    private String numberMaxOrdersLow = "";
+    private String numberMaxOrdersMid = "";
+    private String numberMaxOrdersTop = "";
     private Integer numMaxOrdersAccepted_BBDD;
     private String areadelivery = "";
     private Integer countListOrder = 0;
@@ -141,6 +144,10 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
         inumMyOrdersWithouProblems = prefs.getInt("numMyOrdersWithouProblems", 0);
         areadelivery =  prefs.getString(Constants.PREFERENCES_AREA_DELIVERY, "");
         numberMaxOrdersVisible = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_VISIBLE, "");
+        numberMaxOrdersLow = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_LOW, "");
+        numberMaxOrdersMid = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_MID, "");
+        numberMaxOrdersTop = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_TOP, "");
+
         numMaxOrdersAccepted_BBDD = Integer.valueOf(prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, "0"));
         is_user_new =  prefs.getBoolean(Constants.PREFERENCES_USERMETA_ISUSERNEW, false);
         distanceMax =  prefs.getString(Constants.PREFERENCES_USERMETA_DISTANCEMAX, "");
@@ -226,7 +233,10 @@ public class OrdersFragment extends Fragment implements RetrofitDelegateHelper.A
         //If we receive orders correctly
         Integer  countOrders = 0;
         if (body != null && body.getOrders() != null) {
-            if (numberMaxOrdersVisible != null && numberMaxOrdersVisible != "" && (Integer.valueOf(numberMaxOrdersVisible) > 0) && body.getOrders().size() >= Integer.valueOf(numberMaxOrdersVisible)) {
+            if (                    /*numberMaxOrdersLow != null && numberMaxOrdersLow != "" && (Integer.valueOf(numberMaxOrdersLow) > 0) && body.getOrders().size() >= Integer.valueOf(numberMaxOrdersLow) &&
+                    numberMaxOrdersMid != null && numberMaxOrdersMid != "" && (Integer.valueOf(numberMaxOrdersMid) > 0) && body.getOrders().size() >= Integer.valueOf(numberMaxOrdersMid) &&
+                    numberMaxOrdersTop != null && numberMaxOrdersTop != "" && (Integer.valueOf(numberMaxOrdersTop) > 0) && body.getOrders().size() >= Integer.valueOf(numberMaxOrdersTop) &&*/
+                    numberMaxOrdersVisible != null && numberMaxOrdersVisible != "" && (Integer.valueOf(numberMaxOrdersVisible) > 0) && body.getOrders().size() >= Integer.valueOf(numberMaxOrdersVisible)) {
                 adapter.add(body.getOrders().subList(0, Integer.valueOf(numberMaxOrdersVisible)));
             } else {
                 adapter.add(body.getOrders());

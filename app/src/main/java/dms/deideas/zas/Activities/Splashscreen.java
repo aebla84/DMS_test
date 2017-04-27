@@ -84,9 +84,7 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
                     getConfigurationByWeb();
                 }
             };
-
         }
-
     }
 
     private void getConfigurationByWeb() {
@@ -130,10 +128,10 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
         SharedPreferences.Editor editor = prefs.edit();
         if(body != null)
         {
-            if (body.getMaxOrdersAccepted()!= null && Integer.valueOf(body.getMaxOrdersAccepted()) > 0) {
+/*            if (body.getMaxOrdersAccepted()!= null && Integer.valueOf(body.getMaxOrdersAccepted()) > 0) {
                 editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, body.getMaxOrdersAccepted());
                 editor.commit();
-            }
+            }*/
             if (body.getMaxOrdersVisible()!= null && Integer.valueOf(body.getMaxOrdersVisible()) > 0) {
                 editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_VISIBLE,body.getMaxOrdersVisible());
                 editor.commit();
@@ -142,7 +140,22 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
                 editor.putString(Constants.PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY,body.getMaxTime());
                 editor.commit();
             }
-        openActivity();
+
+            if (body.getMaxOrdersTypeLow() != null && Integer.valueOf(body.getMaxOrdersTypeLow()) > 0){
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_LOW,body.getMaxOrdersTypeLow());
+                editor.commit();
+            }
+
+            if (body.getMaxOrdersTypeMid() != null && Integer.valueOf(body.getMaxOrdersTypeMid()) > 0){
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_MID,body.getMaxOrdersTypeMid());
+                editor.commit();
+            }
+            if (body.getMaxOrdersTypeTop() != null && Integer.valueOf(body.getMaxOrdersTypeTop()) > 0){
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_TOP,body.getMaxOrdersTypeTop());
+                editor.commit();
+            }
+            setPreferencesMaxOrders();
+            openActivity();
         }
     }
 
@@ -186,5 +199,31 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
         }
         startActivity(intent);
         finish();
+    }
+
+    public void setPreferencesMaxOrders(){
+        SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = prefs.edit();
+
+        String level = prefs.getString(Constants.PREFERENCES_USERMETA_DRIVER_LEVEL, "");
+
+        String low = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_LOW, "");
+        String mid = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_MID, "");
+        String top = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_TOP, "");
+
+        switch(level){
+            case "low":
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, low);
+                break;
+            case "mid":
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, mid);
+                break;
+            case "top":
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, top);
+                break;
+        }
+        editor.commit();
     }
 }

@@ -38,6 +38,7 @@ import dms.deideas.zas.Services.OrderSearch;
 import dms.deideas.zas.Services.OrderUpdate;
 import dms.deideas.zas.Services.Retrofit.RetrofitDelegateHelper;
 import dms.deideas.zas.Services.UserMetaGet;
+import dms.deideas.zas.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -68,6 +69,7 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
     private String timeMax = "";
     private Boolean isUserNew = false;
     private String distanceMax = "";
+    private String userLevel = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,7 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         if (IntnumberMaxOrders == 0) {
             getConfigurationByWeb();
         }
+
         message.setText("");
         enterApp.setOnClickListener(this);
     }
@@ -155,7 +158,8 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
                                             isUserNew = (response.body().getIs_driver_new().equals("1"))?true : false ;
                                             //The maximum km that the user can take orders
                                             distanceMax = response.body().getMaxdistance();
-
+                                            //User level(low, mid or top)
+                                            userLevel = response.body().getType();
 
                                             long timelastLogin = System.currentTimeMillis() / 1000;
 
@@ -223,6 +227,7 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         editor.putBoolean(Constants.PREFERENCES_IS_ORDER_CHANGED, false);
         editor.putBoolean(Constants.PREFERENCES_USERMETA_ISUSERNEW, isUserNew);
         editor.putString(Constants.PREFERENCES_USERMETA_DISTANCEMAX, distanceMax);
+        editor.putString(Constants.PREFERENCES_USERMETA_DRIVER_LEVEL, userLevel);
         editor.commit();
         return editor;
     }
@@ -331,6 +336,7 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         g.setServiceCode(Constants.SERVICE_CODE_configuratorweb);
         callRetrofit();
         restHelper.get_webconfiguration(this);
+        setPreferencesMaxOrders();
     }
 
     private void callRetrofit() {
@@ -354,16 +360,30 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         SharedPreferences.Editor editor = prefs.edit();
         if(body != null)
         {
-            if (body.getMaxOrdersAccepted()!= null && Integer.valueOf(body.getMaxOrdersAccepted()) > 0) {
+/*            if (body.getMaxOrdersAccepted()!= null && Integer.valueOf(body.getMaxOrdersAccepted()) > 0) {
                 editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, body.getMaxOrdersAccepted());
                 editor.commit();
-            }
+            }*/
             if (body.getMaxOrdersVisible()!= null && Integer.valueOf(body.getMaxOrdersVisible()) > 0) {
                 editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_VISIBLE,body.getMaxOrdersVisible());
                 editor.commit();
             }
             if (body.getMaxTime()!= null && Integer.valueOf(body.getMaxTime()) > 0) {
                 editor.putString(Constants.PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY,body.getMaxTime());
+                editor.commit();
+            }
+
+            if (body.getMaxOrdersTypeLow() != null && Integer.valueOf(body.getMaxOrdersTypeLow()) > 0){
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_LOW,body.getMaxOrdersTypeLow());
+                editor.commit();
+            }
+
+            if (body.getMaxOrdersTypeMid() != null && Integer.valueOf(body.getMaxOrdersTypeMid()) > 0){
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_MID,body.getMaxOrdersTypeMid());
+                editor.commit();
+            }
+            if (body.getMaxOrdersTypeTop() != null && Integer.valueOf(body.getMaxOrdersTypeTop()) > 0){
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_TOP,body.getMaxOrdersTypeTop());
                 editor.commit();
             }
         }
@@ -383,6 +403,32 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         editor.putString(Constants.PREF_VALUE_MAX_ORDERS_ACCEPTED, "3");
         editor.putString(Constants.PREF_VALUE_MAX_ORDERS_VISIBLE, "10");
         editor.putString(Constants.PREF_VALUE_MAX_TIME_ORDERS, "15");
+        editor.commit();
+    }
+
+    public void setPreferencesMaxOrders(){
+        SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = prefs.edit();
+
+        String level = prefs.getString(Constants.PREFERENCES_USERMETA_DRIVER_LEVEL, "");
+
+        String low = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_LOW, "");
+        String mid = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_MID, "");
+        String top = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDER_TYPE_TOP, "");
+
+        switch(level){
+            case "low":
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, low);
+                break;
+            case "mid":
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, mid);
+                break;
+            case "top":
+                editor.putString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, top);
+                break;
+        }
         editor.commit();
     }
 }
