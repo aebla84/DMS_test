@@ -35,6 +35,7 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
 
     private int idUser = 0;
     private String areaDelivery = "";
+    private String level = "";
     private long timelastLogin = 0;
     private long timeNow = 0;
     private Boolean bopenLogin = false;
@@ -49,6 +50,7 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
         final SharedPreferences prefs = getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         idUser = prefs.getInt(Constants.PREFERENCES_USER_ID, 0);
         areaDelivery = prefs.getString(Constants.PREFERENCES_AREA_DELIVERY, "");
+        level = prefs.getString(Constants.PREFERENCES_USERMETA_DRIVER_LEVEL, "");
 
         // Keep current time in preferences
         timeNow = System.currentTimeMillis() / 1000;
@@ -175,8 +177,7 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
 
     // Save fixed values for variables if the web configurator request is failing.
     public void savingVariablesWebConfig(){
-        SharedPreferences prefs =
-                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
         //Save data of user in preferences
         SharedPreferences.Editor editor = prefs.edit();
 
@@ -202,8 +203,7 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
     }
 
     public void setPreferencesMaxOrders(){
-        SharedPreferences prefs =
-                getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(Constants.PREFERENCES_NAME, Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = prefs.edit();
 

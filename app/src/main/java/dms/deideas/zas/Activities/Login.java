@@ -82,6 +82,7 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         //check if parameter is load. Is possible that user logout and then login and this parameters could be empty. It's a problem
         if (IntnumberMaxOrders == 0) {
             getConfigurationByWeb();
+
         }
 
         message.setText("");

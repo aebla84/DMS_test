@@ -120,7 +120,7 @@ public class Constants {
     public static final String PREFERENCES_MAXTIME_ORDERS_CHANGE_MAXPRIORITY= "timeMax";
     public static final String PREFERENCES_USERMETA_DISTANCEMAX= "distanceMax";
     public static final String PREFERENCES_USERMETA_ISUSERNEW= "isUserNew";
-    public static final String PREFERENCES_USERMETA_DRIVER_LEVEL = "";
+    public static final String PREFERENCES_USERMETA_DRIVER_LEVEL = "userLevel";
 
     public static final int HOMEFRAGMENT_CODE = 0;
     public static final int ORDERSFRAGMENT_CODE = 1;
