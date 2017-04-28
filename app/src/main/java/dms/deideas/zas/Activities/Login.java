@@ -230,6 +230,7 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         editor.putString(Constants.PREFERENCES_USERMETA_DISTANCEMAX, distanceMax);
         editor.putString(Constants.PREFERENCES_USERMETA_DRIVER_LEVEL, userLevel);
         editor.commit();
+        setPreferencesMaxOrders();
         return editor;
     }
 
@@ -337,7 +338,6 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
         g.setServiceCode(Constants.SERVICE_CODE_configuratorweb);
         callRetrofit();
         restHelper.get_webconfiguration(this);
-        setPreferencesMaxOrders();
     }
 
     private void callRetrofit() {
@@ -431,5 +431,7 @@ public class Login extends Activity implements View.OnClickListener, AdapterView
                 break;
         }
         editor.commit();
+        String max = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, "");
+
     }
 }

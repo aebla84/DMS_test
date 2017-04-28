@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Zas.iml" filepath="$PROJECT_DIR$/Zas.iml" />
       <module fileurl="file://$PROJECT_DIR$/Zas_App_Vs_White.iml" filepath="$PROJECT_DIR$/Zas_App_Vs_White.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

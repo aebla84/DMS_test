@@ -225,5 +225,6 @@ public class Splashscreen extends AppCompatActivity implements RetrofitDelegateH
                 break;
         }
         editor.commit();
+        String max = prefs.getString(Constants.PREFERENCES_NUMBER_MAX_ORDERS_ACCEPTED_BYDRIVER, "");
     }
 }
